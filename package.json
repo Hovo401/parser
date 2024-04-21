@@ -1,0 +1,44 @@
+{
+  "name": "parsing_pharmacy_sites",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Hovo401",
+  "license": "ISC",
+  "type": "module",
+  "lint": "npx eslint ./src",
+  "format": "npx eslint ./src --fix",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "scripts": {
+    "build": "rimraf ./dist && npx tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "start": "rimraf ./devBuild && tsc --outDir ./devBuild && node ./devBuild/index.js && rimraf ./devBuild",
+    "start:dev": "npx nodemon --legacy-watch",
+    "start:prod": "node dist/index",
+    "lint": "npx eslint \"{src}/**/*.ts\"",
+    "lint:fix": "npx eslint \"{src}/**/*.ts\" --fix",
+    "delDevBuild": "rimraf ./devBuild"
+  },
+  "dependencies": {
+    "express": "~4.19.2",
+    "puppeteer": "22.6.5",
+    "xlsx": "0.18.5"
+  },
+  "devDependencies": {
+    "@types/express": "~4.17.21",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  }
+}

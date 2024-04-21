@@ -1,0 +1,5 @@
+build
+devBuild
+node_modules
+
+.git

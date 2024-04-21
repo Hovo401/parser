@@ -1,0 +1,9 @@
+{
+    "watch": ["./src"],
+    "ext": ".ts,.js",
+    "ignore": [],
+    "exec": "npm run start",
+    "events": {
+      "exit": "npm run delDevBuild"
+    }
+}
