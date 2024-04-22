@@ -48,13 +48,16 @@ async function run() {
   console.log('testing');
   console.log('Current directory:', currentDirectory);
   console.log(process.env.PORT);
+
   const browser = await puppeteer.launch({
-      // Указываем путь к исполняемому файлу Chrome, который идет в комплекте с Puppeteer
-      executablePath: await puppeteer.executablePath(),
+      // Указываем использовать встроенный Chromium, который идет в комплекте с Puppeteer
+      executablePath: puppeteer.executablePath(),
       // Указываем аргументы для браузера
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
-  const page = await browser.newPage();
+
+    const page = await browser.newPage();
+
 
   // Override geolocation permissions
   const context = browser.defaultBrowserContext();
