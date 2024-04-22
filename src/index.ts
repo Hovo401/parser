@@ -1,44 +1,44 @@
-import puppeteer from 'puppeteer-core';
-import * as chromeLauncher from 'chrome-launcher';
+import puppeteer from 'puppeteer';
 import * as XLSX from 'xlsx';
-
-import { execSync } from 'child_process';
-const currentDirectory = execSync('pwd').toString().trim();
-
 import express, { Request, Response } from 'express';
+import { execSync } from 'child_process';
+import path from 'path';
 
 const app = express();
-const PORT = Number(process.env.PORT) | 3000;
+const PORT = Number(process.env.PORT) || 3000;
+
+const currentDirectory = execSync('pwd').toString().trim();
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
 app.get('/generate-xlsx', (req: Request, res: Response) => {
-  // Создание нового Workbook
-  const workbook = XLSX.utils.book_new();
+  try {
+    // Создание нового Workbook
+    const workbook = XLSX.utils.book_new();
 
-  // Создание нового листа в Workbook
-  const sheet = XLSX.utils.aoa_to_sheet([
-    ['Name', 'Age', "rgrg"],
-    ['John', 30, 50],
-    ['Doe', 25, 50 , 50 , 0],
-    ['Jane', 28],
-  ]);
+    // Создание нового листа в Workbook
+    const sheet = XLSX.utils.aoa_to_sheet([
+      ['Name', 'Age'],
+      ['John', 30],
+      ['Doe', 25],
+      ['Jane', 28],
+    ]);
 
-  sheet['A1'].v = 'Name';
-    sheet['B1'].v = 'Age';
+    // Добавление листа в Workbook
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Sheet1');
 
-  // Добавление листа в Workbook
-  XLSX.utils.book_append_sheet(workbook, sheet, 'Sheet1');
+    // Генерация бинарных данных XLSX файла
+    const xlsxFile = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-  // Генерация бинарных данных XLSX файла
-  const xlsxFile = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-
-  // Отправка файла в ответ
-  res.set('Content-Disposition', 'attachment; filename="example.xlsx"');
-  res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.send(xlsxFile);
+    // Отправка файла в ответ
+    res.set('Content-Disposition', 'attachment; filename="example.xlsx"');
+    res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(xlsxFile);
+  } catch (error) {
+    res.status(500).send('Error generating XLSX file');
+  }
 });
 
 app.listen(PORT, () => {
@@ -46,27 +46,34 @@ app.listen(PORT, () => {
 });
 
 async function run() {
-  console.log('testing');
+  try {
+    console.log('testing');
+    console.log('Current directory:', currentDirectory);
 
-    const chrome = await chromeLauncher.launch();
-    const browser = await puppeteer.connect({
-      browserURL: `http://localhost:${chrome.port}`,
-      defaultViewport: null,
+    const browser = await puppeteer.launch({
+      // Указываем путь к исполняемому файлу Chrome, который идет в комплекте с Puppeteer
+      executablePath: puppeteer.executablePath(),
+      // Указываем аргументы для браузера
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
 
+    // Override geolocation permissions
+    const context = browser.defaultBrowserContext();
+    await context.overridePermissions('https://html5demos.com', ['geolocation']);
+
     // Navigate to a page to see the effect
     await page.goto('https://example.com');
 
-    const screenshotPath = './result/screenshot.png';
+    const screenshotPath = path.join(currentDirectory, 'result', 'screenshot.png');
     await page.screenshot({ path: screenshotPath, fullPage: true });
     console.log('Screenshot saved to', screenshotPath);
 
     await browser.close();
-    await chrome.kill();
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 run();
-
-
