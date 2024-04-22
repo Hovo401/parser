@@ -64,7 +64,7 @@ async function run() {
     await context.overridePermissions('https://arasaca.pp.ua', []);
 
     // Navigate to a page to see the effect
-    await page.goto('https://example.com');
+    await page.goto('https://arasaca.pp.ua');
 
     const screenshotPath = path.join("./", 'result', 'screenshot.png');
     await page.screenshot({ path: screenshotPath, fullPage: true });
