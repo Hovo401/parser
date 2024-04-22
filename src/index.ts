@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer-core';
-import chromeLauncher from 'chrome-launcher';
+import * as chromeLauncher from 'chrome-launcher';
 import * as XLSX from 'xlsx';
 
 import { execSync } from 'child_process';
