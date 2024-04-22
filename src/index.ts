@@ -66,7 +66,7 @@ async function run() {
     // Navigate to a page to see the effect
     await page.goto('https://example.com');
 
-    const screenshotPath = path.join(currentDirectory, 'result', 'screenshot.png');
+    const screenshotPath = path.join("./", 'result', 'screenshot.png');
     await page.screenshot({ path: screenshotPath, fullPage: true });
     console.log('Screenshot saved to', screenshotPath);
 
