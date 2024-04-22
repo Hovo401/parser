@@ -1,4 +1,5 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromeLauncher from 'chrome-launcher';
 import * as XLSX from 'xlsx';
 
 import { execSync } from 'child_process';
@@ -46,31 +47,24 @@ app.listen(PORT, () => {
 
 async function run() {
   console.log('testing');
-  console.log('Current directory:', currentDirectory);
-  console.log(process.env.PORT);
 
-  const browser = await puppeteer.launch({
-      // Указываем использовать встроенный Chromium, который идет в комплекте с Puppeteer
-      executablePath: puppeteer.executablePath(),
-      // Указываем аргументы для браузера
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    const chrome = await chromeLauncher.launch();
+    const browser = await puppeteer.connect({
+      browserURL: `http://localhost:${chrome.port}`,
+      defaultViewport: null,
     });
 
     const page = await browser.newPage();
 
+    // Navigate to a page to see the effect
+    await page.goto('https://example.com');
 
-  // Override geolocation permissions
-  const context = browser.defaultBrowserContext();
-  await context.overridePermissions('https://html5demos.com', ['geolocation']);
+    const screenshotPath = './result/screenshot.png';
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    console.log('Screenshot saved to', screenshotPath);
 
-  // Navigate to a page to see the effect
-  await page.goto('https://arasaca.pp.ua');
-
-  const screenshotPath = './result/screenshot.png';
-  await page.screenshot({ path: screenshotPath, fullPage: true });
-  console.log('Screenshot saved to', screenshotPath);
-
-  await browser.close();
+    await browser.close();
+    await chrome.kill();
 }
 
 run();
