@@ -61,7 +61,7 @@ async function run() {
 
     // Override geolocation permissions
     const context = browser.defaultBrowserContext();
-    await context.overridePermissions('https://html5demos.com', ['geolocation']);
+    await context.overridePermissions('https://arasaca.pp.ua');
 
     // Navigate to a page to see the effect
     await page.goto('https://example.com');
