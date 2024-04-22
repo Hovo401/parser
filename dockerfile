@@ -1,4 +1,4 @@
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM ghcr.io/puppeteer/puppeteer:22.6.5
 
 WORKDIR /app
 
@@ -8,8 +8,8 @@ RUN npm install
 
 COPY . .
 
-VOLUME ["./src"] # dev
+# VOLUME ["./src"] # dev
 
-VOLUME ["./result"]
+# VOLUME ["./result"]
 
-CMD ["npm","run", "start:dev"]
+CMD ["npm","run", "start"]
