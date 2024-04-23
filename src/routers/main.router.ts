@@ -7,10 +7,10 @@ console.log(dirPath.getDirName(import.meta.url));
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
-  });
+});
 
-  // app.get('/generate-xlsx', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
 
-  // });
+});
 
 export default app;
