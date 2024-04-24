@@ -1,16 +1,13 @@
 import express, { Request, Response } from 'express';
 
+import {parsingPharmacyURLsList} from '../controllers/parsingPharmacyURLsList.controller.js';
 
-import * as dirPath from '../utils/dirPath.js';
-const app = express();
-console.log(dirPath.getDirName(import.meta.url));
+const router = express();
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!');
+router.get('/', (req: Request, res: Response) => {
+  res.send('Hello World!');
 });
 
-app.get('/', (req: Request, res: Response) => {
+router.post('/parsingPharmacyURLsList', parsingPharmacyURLsList);
 
-});
-
-export default app;
+export default router;
