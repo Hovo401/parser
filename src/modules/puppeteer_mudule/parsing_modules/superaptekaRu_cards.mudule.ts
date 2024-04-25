@@ -4,23 +4,15 @@ import { createParsingData, ParsingData } from '../ParsingData.js';
 class SuperaptekaRu_cardsMudule {
   constructor() {}
 
-  async parsing({
-    browser,
-    ParsingData,
-    url,
-  }: {
-    browser: puppeteer.Browser;
-    ParsingData: ParsingData[];
-    url: string;
-  }): Promise<void> {
+  async parsing({browser, ParsingData, URLs}:{browser: puppeteer.Browser, ParsingData:ParsingData[],  URLs:string[]}): Promise<void> {
     const delay = Math.floor(500 + Math.random() * 4000);
     await new Promise((resolve) => setTimeout(resolve, delay));
     const page = await browser.newPage();
 
-    ParsingData.push(createParsingData({ url }));
+    ParsingData.push(createParsingData({  }));
 
     try {
-      await page.goto(url);
+      await page.goto(URLs[0]);
       const pageTitle = await page.title();
 
       const element = await page.$('.sc-afede086-1.caEzpJ');
@@ -34,5 +26,6 @@ class SuperaptekaRu_cardsMudule {
     }
   }
 }
+
 
 export { SuperaptekaRu_cardsMudule };

@@ -8,8 +8,8 @@ type URLS = string[];
 
 type domainName = 'superapteka.ru' | 'ozerki.ru';
 type ParsingModules = {
-  'superapteka.ru': SuperaptekaRu_cardsMudule;
-  'ozerki.ru': ozerkiRu_cardsMudule;
+  'superapteka.ru'?: typeof SuperaptekaRu_cardsMudule;
+  'ozerki.ru'?: typeof ozerkiRu_cardsMudule;
 };
 
 class PuppeteerModule {
@@ -26,8 +26,8 @@ class PuppeteerModule {
     }
 
     this.parsingModules = {
-      'superapteka.ru': new SuperaptekaRu_cardsMudule(),
-      'ozerki.ru': new ozerkiRu_cardsMudule(),
+      'superapteka.ru':  SuperaptekaRu_cardsMudule,
+      'ozerki.ru':  ozerkiRu_cardsMudule,
     };
   }
 
@@ -39,9 +39,17 @@ class PuppeteerModule {
     });
   }
 
-  public async parsing_By_domainName(ParsingData: ParsingData[], filURLs: string[], domainName: domainName): Promise<void> {
-    this.parsingModules[domainName].parsing({ browser: this.browser, ParsingData, URLs: filURLs });
+  public async parsing_By_domainName(ParsingData: ParsingData[], filURLs: string[], domainName: keyof ParsingModules): Promise<void> {
+
+    const parser = this.parsingModules[domainName];
+    if (!parser) {
+      throw new Error(`No parser found for domain: ${domainName}`);
+    }
+  
+    await new parser().parsing({browser: this.browser,  ParsingData, URLs: filURLs});
+
   }
+  
 
   public async parsingURLlist(list: URLS): Promise<ParsingData[]> {
     const result: ParsingData[] = [];
@@ -49,17 +57,14 @@ class PuppeteerModule {
 
     for (const key in this.parsingModules) {
       const filURLs = list.filter((e) => getDomainName(e) === key);
-      Promiselist.push(this.parsing_By_domainName(result, filURLs, domainName as keyof typeof this.parsingModules));
+      if(filURLs.length === 0){
+        continue;
+      }
+      console.log(filURLs)
+      // Promiselist.push(this.parsing_By_domainName(result, filURLs, key as keyof typeof this.parsingModules));
     }
 
-    // list.forEach((url) => {
-    //   const domainName = getDomainName(url);
-    //   if (domainName in this.parsingModules) {
-    //     Promiselist.push(this.parsing_By_domainName(result, url, domainName as keyof typeof this.parsingModules));
-    //   } else {
-    //     result.push(createParsingData({}));
-    //   }
-    // });
+
 
     await Promise.all(Promiselist);
 
