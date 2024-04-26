@@ -1,41 +1,59 @@
 import puppeteer from 'puppeteer';
-import { createParsingData, ParsingData } from '../ParsingData.js';
+import { createParsingData, pushParsingData, ParsingData, ParsingData_ } from '../ParsingData.js';
 
 class ozerkiRu_cardsMudule {
-    private TaskList: string[]; 
-
-  constructor() {
-    this.TaskList = [];
-  }
-
-  async parsingInit({
+  async parsing({
     browser,
     ParsingData,
     URLs,
   }: {
     browser: puppeteer.Browser;
-    ParsingData: ParsingData[];
+    ParsingData: ParsingData_;
     URLs: string[];
-  }): Promise<void> {
-    
-    this.TaskList = URLs;
+  }) {
+    try {
+      const page = await browser.newPage();
+
+      for (const url of URLs) {
+        await this.task({ page, url, ParsingData });
+      }
+      // const delay = Math.floor(10 + Math.random() * 200);
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      await page.goto('chrome://settings/');
+      await page.close();
+    } catch (error) {
+      // console.error(error);
+    }
   }
 
-  async parsing ({browser, ParsingData, URLs}:{browser: puppeteer.Browser, ParsingData:ParsingData[],  URLs:string[]}){
+  async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
+    // const delay = Math.floor(10 + Math.random() * 200);
+    // await new Promise((resolve) => setTimeout(resolve, delay));
 
-    const delay = Math.floor(10 + Math.random() * 200);
-    await new Promise((resolve) => setTimeout(resolve, delay));
-
-    const page = await browser.newPage();
-
-    ParsingData.push(createParsingData({  }));
+    // ParsingData.push(createParsingData({}));
 
     try {
-      await page.goto(URLs[0]);
+      page.goto(url);
 
-      const element = await page.$('.sc-e472fd3d-1.dBgsUk.app-main-title__title');
-      const innerHTML = element ? await element.evaluate((el) => el.innerHTML) : undefined;
-      console.log(innerHTML);
+      // const element = await page.waitForSelector('.sc-e472fd3d-1.dBgsUk.app-main-title__title');
+
+      await Promise.all([page.waitForSelector('.sc-e472fd3d-1.dBgsUk.app-main-title__title')]);
+
+      const title = await page.$eval('.sc-e472fd3d-1.dBgsUk.app-main-title__title', (el) => el.innerHTML);
+
+      const regularPrice = await page.$eval('.product-price__base-price', (el) => el.innerHTML);
+
+      // const title = await page.$('.sc-e472fd3d-1.dBgsUk.app-main-title__title');
+      // const title_innerHTML = title ? await title.evaluate((el) => el.innerHTML) : undefined;
+
+      pushParsingData(
+        {
+          url,
+          title,
+          regularPrice,
+        },
+        ParsingData,
+      );
     } catch (error) {
       //   console.error('Error occurred while navigating to URL:', error);
     } finally {

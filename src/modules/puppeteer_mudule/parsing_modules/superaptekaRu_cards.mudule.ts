@@ -1,15 +1,23 @@
 import puppeteer from 'puppeteer';
-import { createParsingData, ParsingData } from '../ParsingData.js';
+import { createParsingData, ParsingData_ } from '../ParsingData.js';
 
 class SuperaptekaRu_cardsMudule {
   constructor() {}
 
-  async parsing({browser, ParsingData, URLs}:{browser: puppeteer.Browser, ParsingData:ParsingData[],  URLs:string[]}): Promise<void> {
+  async parsing({
+    browser,
+    ParsingData,
+    URLs,
+  }: {
+    browser: puppeteer.Browser;
+    ParsingData: ParsingData_;
+    URLs: string[];
+  }): Promise<void> {
     const delay = Math.floor(500 + Math.random() * 4000);
     await new Promise((resolve) => setTimeout(resolve, delay));
     const page = await browser.newPage();
 
-    ParsingData.push(createParsingData({  }));
+    // ParsingData.push(createParsingData());
 
     try {
       await page.goto(URLs[0]);
@@ -26,6 +34,5 @@ class SuperaptekaRu_cardsMudule {
     }
   }
 }
-
 
 export { SuperaptekaRu_cardsMudule };
