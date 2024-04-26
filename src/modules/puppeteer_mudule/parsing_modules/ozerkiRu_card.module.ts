@@ -13,7 +13,7 @@ class ozerkiRu_cardsMudule {
   }) {
     try {
       const page = await browser.newPage();
-
+      await page.setJavaScriptEnabled(false);
       for (const url of URLs) {
         await this.task({ page, url, ParsingData });
       }
