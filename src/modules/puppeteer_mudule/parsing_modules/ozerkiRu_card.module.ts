@@ -16,18 +16,16 @@ class ozerkiRu_cardsMudule {
       const page = await browser.newPage();
       await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
-      page.on('request', (req)=>{
-        if(req.resourceType() !== 'document'){
+      page.on('request', (req) => {
+        if (req.resourceType() !== 'document') {
           req.abort();
-        }else{
+        } else {
           req.continue();
         }
       });
       for (const url of URLs) {
         await this.task({ page, url, ParsingData });
       }
-      // const delay = Math.floor(10 + Math.random() * 200);
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
       await page.goto('chrome://settings/');
       await page.close();
     } catch (error) {
@@ -36,53 +34,106 @@ class ozerkiRu_cardsMudule {
   }
 
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
-    // const delay = Math.floor(10 + Math.random() * 200);
-    // await new Promise((resolve) => setTimeout(resolve, delay));
-
-    // ParsingData.push(createParsingData({}));
-
     try {
-      page.goto(url);
+      await page.goto(url);
 
       await Promise.all([page.waitForSelector('.sc-e472fd3d-1.dBgsUk.app-main-title__title')]);
 
-      const title = await page.$eval('.sc-e472fd3d-1.dBgsUk.app-main-title__title', (el) => el.innerHTML);
+      const title = await page.$eval('.sc-e472fd3d-1.dBgsUk.app-main-title__title', (el) => el?.innerHTML);
 
-      const regularPrice = await page.$eval('.product-price__base-price', (el) => el.innerHTML);
+      let regularPrice = await page.$eval('.product-price__base-price', (el) => el?.innerHTML);
+      regularPrice = regularPrice.replace('&nbsp;', ' ').replace('<!-- -->', '').replace('&nbsp;', ' ');
 
-      const form = await page.$$eval('.sc-9ace328a-5.iLfuOW', (el) => {
-
-        const elements = document.getElementsByClassName('sc-9ace328a-4 fSagyG');
-        // const filteredElements: Element[] = [];
-        let index = 0;
-        for(const element of Array.from(elements)){
-            
-            if (element.innerHTML.includes('Форма выпуска')) {
-                break;
-            }index++;
-        }
-
-        return el[index].getElementsByTagName('span')[0].innerHTML;
+      const available = await page.evaluate(() => {
+        return (
+          document
+            .getElementsByClassName('product-panel__wrapper')[0]
+            ?.getElementsByClassName('sc-181f0572-2 cnGAiH')[0]?.innerHTML || 'null'
+        );
       });
 
-      const description = await page.$$eval('.sc-f6074f52-5.keEjdy', el => el[0].innerHTML)
+      const manufacturer = await topBarPardingByName(page, 'Производитель');
+      const form = await topBarPardingByName(page, 'Форма выпуска');
+      const activeIngredient = await topBarPardingByName(page, 'Действующее вещество');
+
+      const prescription = await mainPardingByName(page, 'Состав');
+      const usageAndDosage = await mainPardingByName(page, 'Режим дозирования');
+      const indications = await mainPardingByName(page, 'Показания');
+      const contraindications = await mainPardingByName(page, 'Противопоказания к применению');
+
+      const photoUrls = await getImagesURLs(page);
 
       pushParsingData(
         {
           url,
           title,
+          activeIngredient,
           regularPrice,
           form,
-          description
+          indications,
+          contraindications,
+          usageAndDosage,
+          manufacturer,
+          available,
+          prescription,
+          photoUrls,
         },
         ParsingData,
       );
     } catch (error) {
-        console.error('Error occurred while navigating to URL:', error);
-    } finally {
-      // await page.close();
+      console.error('Error occurred while navigating to URL:', error);
     }
   }
 }
 
 export { ozerkiRu_cardsMudule };
+
+async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<string> {
+  return await page.evaluate((propertyName) => {
+    const propertyElement = [...Array.from(document.querySelectorAll('span.fSagyG'))].find((element) =>
+      element?.textContent?.trim().startsWith(propertyName),
+    );
+
+    if (propertyElement) {
+      const valueElement = propertyElement?.nextElementSibling?.querySelector('span[title], a[title]');
+      return valueElement ? String(valueElement.getAttribute('title')) : 'null';
+    } else {
+      return 'null';
+    }
+  }, name);
+}
+
+async function mainPardingByName(page: puppeteer.Page, name: string): Promise<string> {
+  return await page.$$eval(
+    '.sc-f6074f52-4',
+    (nodes, name) => {
+      for (const node of nodes) {
+        const header = node?.querySelector('.sc-f6074f52-6');
+
+        if (header && header?.textContent?.trim().includes(name)) {
+          const content = node?.querySelector('.sc-f6074f52-5')?.textContent?.trim();
+          return String(content);
+        }
+      }
+      return 'null';
+    },
+    name,
+  );
+}
+
+async function getImagesURLs(page: puppeteer.Page) {
+  return await page.evaluate(() => {
+    const value = document.querySelector('.sc-aa4bb14d-0.gIGWkk');
+    const out = [];
+    if (value) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(value.outerHTML, 'text/html');
+
+      const imgElement = doc.querySelectorAll('img');
+      for (const el of Array.from(imgElement)) {
+        out.push('https://' + window.location.hostname + el.getAttribute('src'));
+      }
+    }
+    return out || [];
+  });
+}

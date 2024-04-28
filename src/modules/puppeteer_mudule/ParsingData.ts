@@ -1,4 +1,4 @@
-
+import { getDomainName } from "../../utils/functions.js";
 type ParsingData_ = {
   'Общий отчет': Array<object>,
   'Фотографии': Array<object>
@@ -44,9 +44,6 @@ type ParsingData = {
     usageAndDosage?: string,
     manufacturer?: string,
     available?: string,
-    photoTitle?: string,
-    photoUrl?: string,
-    siteUrl?: string,
     photoUrls?: string[],
   }, obj: ParsingData_): void {
     obj['Общий отчет'].push({
@@ -66,9 +63,9 @@ type ParsingData = {
     });
 
     obj['Фотографии'].push({
-      'Название препарата': data.photoTitle || 'null',
-        'URL': data.photoUrl || 'null',
-        'URL сайта': data.siteUrl || 'null',
+      'Название препарата': data.title || 'null',
+        'URL': data.url || 'null',
+        'URL сайта': getDomainName(data.url || '') || 'null',
         'URLs фото': data.photoUrls || [],
     });
   }

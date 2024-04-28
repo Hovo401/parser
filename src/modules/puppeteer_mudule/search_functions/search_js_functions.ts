@@ -14,4 +14,5 @@ function getIndexByClassNameAndInnerHTML (className:string, innerHTMLTest: strin
 }
 
 
+
 export {getIndexByClassNameAndInnerHTML}
