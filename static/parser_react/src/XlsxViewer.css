@@ -1,0 +1,45 @@
+.XlsxViewer{
+    width: 100%;
+    overflow: auto;
+    height: calc(100vh - 20px);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.25);
+    -ms-overflow-style: scrollbar;
+    
+}
+
+
+.maxHeight{
+    max-height: 80px;
+    overflow: auto;
+}
+
+
+.excel-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+  }
+  
+  .excel-table th,
+  .excel-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    color:#fff;
+  }
+  
+  .excel-table th {
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+  }
+  
+  .excel-table tr:nth-child(even) {
+    background-color: #ddd;
+  }
+  
+  .excel-table tr:hover {
+    background-color: #ccc;
+  }

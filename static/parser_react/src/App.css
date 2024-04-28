@@ -1,47 +1,85 @@
 .App-header {
   text-align: center;
+
 }
 .App{
-  padding-right: 10px;
   padding-left: 10px;
 }
-#parsingInfo{
-  min-width: 85%;
-  max-width: 85%;
-  min-height: 40px;
+
+.Text{
+  color: rgb(0, 0, 0);
+  font-size: 17px;
+}
+
+#parsingInfoTextArea{
+  min-width: 100% ;
+  max-width: 100% ;
+  min-height: 70px;
   max-height: 300px;
+  height: 70px;
   padding: 10px;
   border: 0px;
   border-radius: 10px;
   font-size: 15px;
-  margin-top: 10px;
+  background-color: #CDCDCD;
+}
+#parsingPanel{
+  display: flex;
+  flex-wrap: wrap;
+  height: calc(100vh - 32px);
+}
+#leftPanel{
+  padding-top: 10px;
+  padding-right: 10px;
+  min-width: calc(100% - 140px);
+  max-width: calc(100% - 140px);
+}
+#rightPanel{
+  flex: 1; 
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 140px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 20px 0px 0px 0px;
 
-  -webkit-user-select: none; /* Для WebKit (Chrome, Safari) */
-  -moz-user-select: none; /* Для Firefox */
-  -ms-user-select: none; /* Для Internet Explorer/Edge */
-  user-select: none; /* Общее свойство */
+}
+
+.shadow{
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
+  -moz-box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
+  box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
+}
+
+.borderZero{
+  border: 0px;
+  
   outline: none;
 }
 
-#parsingPanel{
-  display: flex;
-  width: 100%;
-}
-#buttonPanel{
-  width: 100%;
-}
 
-.left{
+
+
+/* .left{
   position: absolute;
   right: 0px;
-}
+} */
 
 .button{
   background-color: #acacac;
   width: 500px;
-  max-width: 15% ;
-
-  height: 50px;
+  max-width: 100% ;
+  border-radius: 10px;
+  height: 30px;
+  transition: 0.2s;
+  margin-bottom: 10px;
+}
+.active:hover{
+  background-color: #6d6c6c;
+  cursor: pointer;
+}
+.active:active{
+  background-color: #bdbdbd;
 }
 
 .App-header {

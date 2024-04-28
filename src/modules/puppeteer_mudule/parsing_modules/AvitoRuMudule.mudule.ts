@@ -2,81 +2,99 @@ import puppeteer from 'puppeteer';
 import { createParsingData, pushParsingData, ParsingData, ParsingData_ } from '../ParsingData.js';
 import { getIndexByClassNameAndInnerHTML } from '../search_functions/search_js_functions.js';
 
-class SuperaptekaRu_cardsMudule {
+type searchInfo = {
+  url: string;
+};
+
+type dataType = {
+  title: string;
+};
+
+class AvitoRuMudule {
   async parsing({
     browser,
     ParsingData,
-    URLs,
+    searchInfo,
   }: {
     browser: puppeteer.Browser;
     ParsingData: ParsingData_;
-    URLs: string[];
+    searchInfo: searchInfo;
   }) {
     try {
       const page = await browser.newPage();
       await page.setJavaScriptEnabled(false);
-      await page.setRequestInterception(true);
-      page.on('request', (req) => {
-        if (req.resourceType() !== 'document') {
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
-      for (const url of URLs) {
-        await this.task({ page, url, ParsingData });
-      }
-      await page.goto('chrome://settings/');
-      await page.close();
+      // await page.setRequestInterception(true);
+      // page.on('request', (req) => {
+      //   if (req.resourceType() !== 'document') {
+      //     req.abort();
+      //   } else {
+      //     req.continue();
+      //   }
+      // });
+
+      await this.task({ page, searchInfo, ParsingData });
+
+      // await page.goto('chrome://settings/');
+      // await page.close();
     } catch (error) {
       // console.error(error);
     }
   }
 
-  async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
+  async task({
+    page,
+    searchInfo,
+    ParsingData,
+  }: {
+    page: puppeteer.Page;
+    searchInfo: searchInfo;
+    ParsingData: ParsingData_;
+  }) {
     try {
-      await page.goto(url);
+      console.log(searchInfo?.url);
+      await page.goto(searchInfo?.url);
 
-      await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
-
-      const title = await page.$eval('.sc-afede086-1.caEzpJ', (el) => el?.innerHTML);
-
-      let regularPrice = await page.$eval('.product-price__base-price', (el) => el?.innerHTML);
-      regularPrice = regularPrice.replace('&nbsp;', ' ').replace('<!-- -->', '').replace('&nbsp;', ' ');
-
-      const available = await page.evaluate(() => {
-        return (
-          document
-            .getElementsByClassName('product-panel__wrapper')[0]
-            ?.getElementsByClassName('sc-181f0572-2 cnGAiH')[0]?.innerHTML || 'null'
+      const data: dataType[] = await page.evaluate(() => {
+        const itemsList = Array.from(
+          document.getElementsByClassName(
+            'iva-item-root-_lk9K photo-slider-slider-S15A_ iva-item-list-rfgcH iva-item-redesign-rop6P iva-item-responsive-_lbhG items-item-My3ih items-listItem-Gd1jN js-catalog-item-enum',
+          ),
         );
+
+        const arrOut = [];
+
+        for (const item of itemsList) {
+          const title = item.getElementsByClassName(
+            'styles-module-root-GKtmM styles-module-root-YczkZ styles-module-size_l-z_5_p styles-module-size_l_compensated-_l_w8 styles-module-size_l-YMQUP styles-module-ellipsis-a2Uq1 styles-module-weight_bold-jDthB stylesMarningNormal-module-root-S7NIr stylesMarningNormal-module-header-l-iFKq3',
+          )[0];
+
+          arrOut.push({
+            title: title.innerHTML,
+          });
+        }
+        return arrOut;
       });
 
-      const manufacturer = await topBarPardingByName(page, 'Производитель');
-      const form = await topBarPardingByName(page, 'Форма выпуска');
-      const activeIngredient = await topBarPardingByName(page, 'Действующее вещество');
+      console.log(data);
 
-      const prescription = await mainPardingByName(page, 'Состав');
-      const usageAndDosage = await mainPardingByName(page, 'Режим дозирования');
-      const indications = await mainPardingByName(page, 'Показания');
-      const contraindications = await mainPardingByName(page, 'Противопоказания к применению');
+      // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
 
-      const photoUrls = await getImagesURLs(page);
+      // const title = await page.$eval('.sc-afede086-1.caEzpJ', (el) => el?.innerHTML);
+
+      // let regularPrice = await page.$eval('.product-price__base-price', (el) => el?.innerHTML);
+      // regularPrice = regularPrice.replace('&nbsp;', ' ').replace('<!-- -->', '').replace('&nbsp;', ' ');
+
+      // const available = await page.evaluate(() => {
+      //   return (
+      //     document
+      //       .getElementsByClassName('product-panel__wrapper')[0]
+      //       ?.getElementsByClassName('sc-181f0572-2 cnGAiH')[0]?.innerHTML || 'null'
+      //   );
+      // });
 
       pushParsingData(
         {
-          url,
-          title,
-          activeIngredient,
-          regularPrice,
-          form,
-          indications,
-          contraindications,
-          usageAndDosage,
-          manufacturer,
-          available,
-          prescription,
-          photoUrls,
+          title: data[0]?.title,
         },
         ParsingData,
       );
@@ -88,7 +106,7 @@ class SuperaptekaRu_cardsMudule {
   }
 }
 
-export { SuperaptekaRu_cardsMudule };
+export { AvitoRuMudule };
 
 async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<string> {
   return await page.evaluate((propertyName) => {

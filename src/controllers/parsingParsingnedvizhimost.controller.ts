@@ -3,9 +3,9 @@ import PuppeteerModule from '../modules/puppeteer_mudule/puppeteer.mudule.contro
 
 const puppeteerModule = new PuppeteerModule();
 
-async function parsingPharmacyURLsList(req: Request, res: Response): Promise<void> {
-  const result = await puppeteerModule.parsingURLlist(req.body?.URLS ?? []);
+async function parsingnedvizhimost(req: Request, res: Response): Promise<void> {
+  const result = await puppeteerModule.parsing(req.body?.searchInfo ?? {});
   res.json(result);
 }
 
-export { parsingPharmacyURLsList };
+export { parsingnedvizhimost };

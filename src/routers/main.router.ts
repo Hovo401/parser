@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 
-import {parsingPharmacyURLsList} from '../controllers/parsingPharmacyURLsList.controller.js';
+import { parsingnedvizhimost } from '../controllers/parsingParsingnedvizhimost.controller.js';
 
 const router = express();
 
@@ -8,6 +8,6 @@ router.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-router.post('/parsingPharmacyURLsList', parsingPharmacyURLsList);
+router.post('/nedvizhimost', parsingnedvizhimost);
 
 export default router;
