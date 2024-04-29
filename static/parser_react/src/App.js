@@ -21,14 +21,12 @@ function App() {
       setTextarea_(textarea_.replace(/ /g,'').replace(/\n/g,'').replace(/,/g,',\n'))
 
       const data = {
-        URLS: textarea_.replace(/ /g,'').replace(/\n/g,'').split(',').filter((e)=>{
-          const urlRegex = /^(http|https):\/\/[^ "]+$/;
-        return urlRegex.test(e);
-      })};
+        keywords: textarea_
+      };
       setParsingStatus('parsing')
       setFile(null)
       // const response = await axios.post(window.location.href + '/parsingPharmacyURLsList' , data); // prod
-      const response = await axios.post('http://localhost:3000/parsingPharmacyURLsList', data); //dev
+      const response = await axios.post('http://localhost:3000/nedvizhimost', data); //dev
       setParsingStatus('building')
       const blob = new Blob([creatFile(response.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       setFile(blob)

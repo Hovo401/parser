@@ -4,7 +4,7 @@ import PuppeteerModule from '../modules/puppeteer_mudule/puppeteer.mudule.contro
 const puppeteerModule = new PuppeteerModule();
 
 async function parsingnedvizhimost(req: Request, res: Response): Promise<void> {
-  const result = await puppeteerModule.parsing(req.body?.searchInfo ?? {});
+  const result = await puppeteerModule.parsing(req.body ?? {});
   res.json(result);
 }
 

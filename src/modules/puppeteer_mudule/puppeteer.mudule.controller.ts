@@ -53,7 +53,7 @@ class PuppeteerModule {
     switch (domainName) {
       case 'www.avito.ru':
         searchInfo.url =
-          'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || '';
+          'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || ' ';
         break;
     }
 

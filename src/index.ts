@@ -1,8 +1,11 @@
 import express from 'express';
 import mainRouter from './routers/main.router.js';
 import PuppeteerModule from './modules/puppeteer_mudule/puppeteer.mudule.controller.js';
+import cors from 'cors';
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use(mainRouter);
 

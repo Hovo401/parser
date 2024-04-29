@@ -4,6 +4,7 @@ import { getIndexByClassNameAndInnerHTML } from '../search_functions/search_js_f
 
 type searchInfo = {
   url: string;
+  keywords:string
 };
 
 type dataType = {
@@ -57,7 +58,7 @@ class AvitoRuMudule {
       const data: dataType[] = await page.evaluate(() => {
         const itemsList = Array.from(
           document.getElementsByClassName(
-            'iva-item-root-_lk9K photo-slider-slider-S15A_ iva-item-list-rfgcH iva-item-redesign-rop6P iva-item-responsive-_lbhG items-item-My3ih items-listItem-Gd1jN js-catalog-item-enum',
+            'iva-item-root-_lk9K photo-slider-slider-S15A_ iva-item-list-rfgcH iva-item-redesign-rop6P iva-item-responsive-_lbhG iva-item-xl-_jicv items-item-My3ih items-listItem-Gd1jN js-catalog-item-enum',
           ),
         );
 
@@ -65,8 +66,8 @@ class AvitoRuMudule {
 
         for (const item of itemsList) {
           const title = item.getElementsByClassName(
-            'styles-module-root-GKtmM styles-module-root-YczkZ styles-module-size_l-z_5_p styles-module-size_l_compensated-_l_w8 styles-module-size_l-YMQUP styles-module-ellipsis-a2Uq1 styles-module-weight_bold-jDthB stylesMarningNormal-module-root-S7NIr stylesMarningNormal-module-header-l-iFKq3',
-          )[0];
+            'styles-module-root-GKtmM styles-module-root-YczkZ styles-module-size_l-z_5_p styles-module-size_l_compensated-_l_w8 styles-module-size_l-YMQUP styles-module-ellipsis-a2Uq1 styles-module-weight_bold-jDthB stylesMarningNormal-module-root-S7NIr stylesMarningNormal-module-header-l-iFKq3'
+          )[0] || 'null';
 
           arrOut.push({
             title: title.innerHTML,
