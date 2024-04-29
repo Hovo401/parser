@@ -5,4 +5,11 @@ function getDomainName(urlString: string): string {
   return parsedUrl.hostname;
 }
 
+type ParsingData = {
+  [key: string]: { [key: string]: string | string[] }[]
+};
+
+
+
+
 export { getDomainName };

@@ -1,0 +1,63 @@
+.XlsxViewer{
+    width: 100%;
+    color: #fff;
+}
+
+.xlsx_button{
+  border: 0px;
+  margin-right: 5px;
+  padding: 5px;
+  background-color: #333;
+  color:white;
+}
+.close_page{
+  background-color: #8b8b8b;
+}
+.close_page:hover{
+  cursor: pointer;
+  background-color: #616161;
+}
+
+
+.maxHeight{
+    max-height: 80px;
+    overflow: auto;
+}
+
+#xlsxWiewer_data{
+  overflow: auto;
+  height: calc(100vh - 20px);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.25);
+  -ms-overflow-style: scrollbar;
+
+}
+
+.excel-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+  }
+  
+  .excel-table th,
+  .excel-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    color:#fff;
+  }
+  
+  .excel-table th {
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+  }
+  
+  .excel-table tr:nth-child(even) {
+    background-color: #ddd;
+  }
+  
+  .excel-table tr:hover {
+    background-color: #ccc;
+  }

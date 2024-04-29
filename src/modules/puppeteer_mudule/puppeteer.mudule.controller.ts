@@ -3,12 +3,18 @@ import { SuperaptekaRu_cardsMudule } from './parsing_modules/superaptekaRu_cards
 import { ozerkiRu_cardsMudule } from './parsing_modules/ozerkiRu_card.module.js';
 import { ParsingData, ParsingData_, createParsingData } from './ParsingData.js';
 import { getDomainName } from '../../utils/functions.js';
+import { AsnaRu_cardsMudule } from './parsing_modules/AsnaRu_cards.mudule.js';
+import { AloeaptekaRuMudule } from './parsing_modules/AloeaptekaRu.mudule.js';
+import { ZhivikaRuMudule } from './parsing_modules/ZhivikaRu.mudule.js';
 
 type URLS = string[];
 
 type ParsingModules = {
   'superapteka.ru'?: typeof SuperaptekaRu_cardsMudule;
   'ozerki.ru'?: typeof ozerkiRu_cardsMudule;
+  'www.asna.ru'?: typeof AsnaRu_cardsMudule;
+  'aloeapteka.ru'?: typeof AloeaptekaRuMudule;
+  'zhivika.ru'?: typeof ZhivikaRuMudule;
 };
 
 class PuppeteerModule {
@@ -27,14 +33,20 @@ class PuppeteerModule {
     this.parsingModules = {
       'superapteka.ru': SuperaptekaRu_cardsMudule,
       'ozerki.ru': ozerkiRu_cardsMudule,
+      'www.asna.ru': AsnaRu_cardsMudule,
+      'aloeapteka.ru': AloeaptekaRuMudule,
+      'zhivika.ru': ZhivikaRuMudule,
     };
   }
 
   public async openBrowser() {
     this.browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
-      headless: false, // включить отображение браузера
+      // args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true,
+      defaultViewport: null,
+      ignoreHTTPSErrors: true
     });
   }
 

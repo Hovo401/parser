@@ -37,7 +37,25 @@ class SuperaptekaRu_cardsMudule {
     try {
       await page.goto(url);
 
-      await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
+      // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
+
+      const pageTitle = await page.$eval('title', (e) => e.innerHTML);
+
+      if (pageTitle === 'DDoS-Guard') {
+        await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
+        await page.goto(url);
+        const pageTitle = await page.$eval('title', (e) => e.innerHTML);
+        if (pageTitle === 'DDoS-Guard') {
+          pushParsingData(
+            {
+              url,
+              title: 'DDoS failure',
+            },
+            ParsingData,
+          );
+          return;
+        }
+      }
 
       const title = await page.$eval('.sc-afede086-1.caEzpJ', (el) => el?.innerHTML);
 
@@ -57,7 +75,11 @@ class SuperaptekaRu_cardsMudule {
       const activeIngredient = await topBarPardingByName(page, 'Действующее вещество');
 
       const prescription = await mainPardingByName(page, 'Состав');
-      const usageAndDosage = await mainPardingByName(page, 'Режим дозирования');
+      const description = await mainPardingByName(page, 'Описание');
+      let usageAndDosage = await mainPardingByName(page, 'Режим дозирования');
+      if (usageAndDosage === 'null') {
+        usageAndDosage = await mainPardingByName(page, 'Применение');
+      }
       const indications = await mainPardingByName(page, 'Показания');
       const contraindications = await mainPardingByName(page, 'Противопоказания к применению');
 
@@ -70,6 +92,7 @@ class SuperaptekaRu_cardsMudule {
           activeIngredient,
           regularPrice,
           form,
+          description,
           indications,
           contraindications,
           usageAndDosage,

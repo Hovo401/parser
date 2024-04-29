@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { createParsingData, pushParsingData, ParsingData, ParsingData_ } from '../ParsingData.js';
 import { getIndexByClassNameAndInnerHTML } from '../search_functions/search_js_functions.js';
 
-class ozerkiRu_cardsMudule {
+class AsnaRu_cardsMudule {
   async parsing({
     browser,
     ParsingData,
@@ -14,15 +14,15 @@ class ozerkiRu_cardsMudule {
   }) {
     try {
       const page = await browser.newPage();
-      await page.setJavaScriptEnabled(false);
-      await page.setRequestInterception(true);
-      page.on('request', (req) => {
-        if (req.resourceType() !== 'document') {
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
+      //   await page.setJavaScriptEnabled(false);
+      //   await page.setRequestInterception(true);
+      //   page.on('request', (req) => {
+      //     if (req.resourceType() !== 'document') {
+      //       req.abort();
+      //     } else {
+      //       req.continue();
+      //     }
+      //   });
       for (const url of URLs) {
         await this.task({ page, url, ParsingData });
       }
@@ -37,9 +37,27 @@ class ozerkiRu_cardsMudule {
     try {
       await page.goto(url);
 
-      // await Promise.all([page.waitForSelector('.sc-e472fd3d-1.dBgsUk.app-main-title__title')]);
+      // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
 
-      const title = await page.$eval('.sc-e472fd3d-1.dBgsUk.app-main-title__title', (el) => el?.innerHTML);
+      const pageTitle = await page.$eval('title', (e) => e.innerHTML);
+
+      if (pageTitle === 'DDoS-Guard') {
+        await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
+        await page.goto(url);
+        const pageTitle = await page.$eval('title', (e) => e.innerHTML);
+        if (pageTitle === 'DDoS-Guard') {
+          pushParsingData(
+            {
+              url,
+              title: 'DDoS fale',
+            },
+            ParsingData,
+          );
+          return;
+        }
+      }
+
+      const title = await page.$eval('.sc-afede086-1.caEzpJ', (el) => el?.innerHTML);
 
       let regularPrice = await page.$eval('.product-price__base-price', (el) => el?.innerHTML);
       regularPrice = regularPrice.replace('&nbsp;', ' ').replace('<!-- -->', '').replace('&nbsp;', ' ');
@@ -82,15 +100,17 @@ class ozerkiRu_cardsMudule {
       );
     } catch (error) {
       console.error('Error occurred while navigating to URL:', error);
+    } finally {
+      // await page.close();
     }
   }
 }
 
-export { ozerkiRu_cardsMudule };
+export { AsnaRu_cardsMudule };
 
 async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<string> {
   return await page.evaluate((propertyName) => {
-    const propertyElement = [...Array.from(document.querySelectorAll('span.fSagyG'))].find((element) =>
+    const propertyElement = [...Array.from(document.querySelectorAll('span.cxutsw'))].find((element) =>
       element?.textContent?.trim().startsWith(propertyName),
     );
 
@@ -105,13 +125,12 @@ async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<
 
 async function mainPardingByName(page: puppeteer.Page, name: string): Promise<string> {
   return await page.$$eval(
-    '.sc-f6074f52-4',
+    '.sc-44f276c9-5',
     (nodes, name) => {
       for (const node of nodes) {
-        const header = node?.querySelector('.sc-f6074f52-6');
-
+        const header = node?.querySelector('.sc-44f276c9-7');
         if (header && header?.textContent?.trim().includes(name)) {
-          const content = node?.querySelector('.sc-f6074f52-5')?.textContent?.trim();
+          const content = node?.querySelector('.sc-44f276c9-6')?.textContent?.trim();
           return String(content);
         }
       }
@@ -129,7 +148,8 @@ async function getImagesURLs(page: puppeteer.Page) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(value.outerHTML, 'text/html');
 
-      const imgElement = doc.querySelectorAll('img');
+      // Получение ссылки на изображение
+      const imgElement = doc?.querySelectorAll('img');
       for (const el of Array.from(imgElement)) {
         out.push('https://' + window.location.hostname + el.getAttribute('src'));
       }
