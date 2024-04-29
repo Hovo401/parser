@@ -2,6 +2,7 @@ import './XlsxViewer.css';
 import React, { useState,useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
+
 function XlsxViewer({file}) {
   const [xlsxData, setXlsxData] = useState(null);
   const [currentSheet, setCurrentSheet] = useState(0);
@@ -15,10 +16,10 @@ function XlsxViewer({file}) {
   }, [file]);
 
   const handleFileChange = (file) => {
-      const reader = new FileReader();
+        const reader = new FileReader();
 
-      reader.onload = (e) => {
-          const data = new Uint8Array(e.target.result);
+        reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
           const wb = XLSX.read(data, { type: 'array' });
           const names = wb.SheetNames;
 
@@ -35,7 +36,7 @@ function XlsxViewer({file}) {
       };
 
       reader.readAsArrayBuffer(file);
-  };
+  }; 
   
     const renderExcelData = (data) => {
         return (
@@ -81,7 +82,9 @@ function XlsxViewer({file}) {
                 currentSheet={currentSheet}
                 onSheetChange={handleSheetChange}
             />
-            {xlsxData}
+            <div id='xlsxWiewer_data'>
+                {xlsxData}
+            </div>
         </div>
     );
 }
@@ -93,7 +96,7 @@ function SheetSwitcher({ sheetNames, currentSheet, onSheetChange }) {
                 <button
                     key={index}
                     onClick={() => onSheetChange(index)}
-                    className={index === currentSheet ? 'active' : ''}
+                    className={index === currentSheet ? 'open_page xlsx_button' : 'close_page xlsx_button'}
                 >
                     {name}
                 </button>
@@ -103,3 +106,7 @@ function SheetSwitcher({ sheetNames, currentSheet, onSheetChange }) {
 }
 
 export default XlsxViewer;
+
+
+
+

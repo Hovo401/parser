@@ -46,9 +46,9 @@
 }
 
 .shadow{
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
-  -moz-box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
-  box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.75);
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(124, 124, 124, 0.75);
+  -moz-box-shadow: 0px 0px 3px 1px rgba(124, 124, 124, 0.75);
+  box-shadow: 0px 0px 3px 1px rgba(124, 124, 124, 0.75);
 }
 
 .borderZero{
@@ -58,24 +58,23 @@
 }
 
 
-
-
 /* .left{
   position: absolute;
   right: 0px;
 } */
 
 .button{
-  background-color: #acacac;
+  background-color: #666666;
   width: 500px;
   max-width: 100% ;
   border-radius: 10px;
   height: 30px;
   transition: 0.2s;
   margin-bottom: 10px;
+  color:white;
 }
 .active:hover{
-  background-color: #6d6c6c;
+  background-color: #888888;
   cursor: pointer;
 }
 .active:active{
@@ -96,4 +95,23 @@
   color: #61dafb;
 }
 
+.parsingStatus_parsing{
+  background-color:#441b1b ;
+  animation: identifier 2s infinite; 
+}
+.parsingStatus_parsing:hover{
+    cursor:progress;
+    background-color:#441b1b;
+}
 
+@keyframes identifier {
+  0%{
+    font-size: 16px;
+  }
+  50%{
+    font-size: 18px;
+  }
+  0%{
+    font-size: 16px;
+  }
+}
