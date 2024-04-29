@@ -18,15 +18,15 @@ function App() {
         return;
       }
 
-      setTextarea_(textarea_.replace(/ /g,'').replace(/\n/g,'').replace(/,/g,',\n'))
+      // setTextarea_(textarea_.replace(/ /g,'').replace(/\n/g,'').replace(/,/g,',\n'))
 
       const data = {
         keywords: textarea_
       };
       setParsingStatus('parsing')
       setFile(null)
-      // const response = await axios.post(window.location.href + '/parsingPharmacyURLsList' , data); // prod
-      const response = await axios.post('http://localhost:3000/nedvizhimost', data); //dev
+      const response = await axios.post(window.location.href + 'nedvizhimost' , data); // prod
+      // const response = await axios.post('http://localhost:3000/nedvizhimost', data); //dev
       setParsingStatus('building')
       const blob = new Blob([creatFile(response.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       setFile(blob)
@@ -60,7 +60,7 @@ function App() {
         <div id="parsingPanel">
           <div id="leftPanel">
             <textarea value={textarea_} onChange={(event) => setTextarea_(event.target.value)} id="parsingInfoTextArea" placeholder="Введите ключевые слова сюда для (Авито и ЦИАН)" className="borderZero shadow"></textarea >
-            { <input type="file" onChange={handleFileChange} /> }
+            {/* { <input type="file" onChange={handleFileChange} /> } */}
             <XlsxViewer file={file} />
           </div>
           <div id="rightPanel">
@@ -93,3 +93,6 @@ function creatFile(obj) {
   var xlsxFile = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
   return xlsxFile;
 }
+
+
+

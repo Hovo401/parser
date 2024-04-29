@@ -47,7 +47,7 @@ function XlsxViewer({file}) {
                             {row.map((cell, cellIndex) => 
                                 <td key={cellIndex}>
                                   <div className='maxHeight'>
-                                  {cell}
+                                    {findLinksAndWrapInAnchorTags(cell)}
                                   </div>
                               </td>
                             )}
@@ -110,3 +110,18 @@ export default XlsxViewer;
 
 
 
+function findLinksAndWrapInAnchorTags(text) {
+    // Регулярное выражение для поиска ссылок
+    var regex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*\b/g;
+    // Заменяем найденные ссылки на ссылки, обернутые в теги <a>
+
+    var replacedText = text.replace(regex, function(match) {
+        return `<a href="#" onclick="window.open('${match}')" className="a">${match}</a>`;
+    });
+    // Возвращаем текст с обернутыми в теги <a> ссылками
+    return <TextToHtml text={replacedText} />;
+}
+
+function TextToHtml({ text }) {
+    return <div dangerouslySetInnerHTML={{ __html: text }} />;
+}

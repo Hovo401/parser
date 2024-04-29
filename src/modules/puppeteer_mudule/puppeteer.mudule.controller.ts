@@ -1,18 +1,18 @@
 import puppeteer from 'puppeteer';
 import { AvitoRuMudule } from './parsing_modules/AvitoRuMudule.mudule.js';
-import { ozerkiRu_cardsMudule } from './parsing_modules/ozerkiRu_card.module.js';
 import { ParsingData, ParsingData_, createParsingData } from './ParsingData.js';
 import { getDomainName } from '../../utils/functions.js';
+import { CianRuModule } from './parsing_modules/CianRu.module.js';
 
 type searchInfo = {
   url: string;
   keywords: string;
 };
-
 type ParsingModules = {
   'www.avito.ru'?: typeof AvitoRuMudule;
-  // 'ozerki.ru'?: typeof ozerkiRu_cardsMudule;
+  'www.cian.ru'?: typeof CianRuModule;
 };
+
 
 class PuppeteerModule {
   static ex: PuppeteerModule;
@@ -29,15 +29,15 @@ class PuppeteerModule {
 
     this.parsingModules = {
       'www.avito.ru': AvitoRuMudule,
-      // 'ozerki.ru': ozerkiRu_cardsMudule,
+      'www.cian.ru': CianRuModule
     };
   }
 
   public async openBrowser() {
     this.browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
-      // args: ['--no-sandbox'], // , '--disable-setuid-sandbox', '--disable-features=site-per-process'
-      headless: false, // включить отображение браузера
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
+      // headless: false, // включить отображение браузера
     });
   }
 
@@ -55,6 +55,10 @@ class PuppeteerModule {
         searchInfo.url =
           'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || ' ';
         break;
+      case 'www.cian.ru':
+        searchInfo.url =
+          'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || ' ';
+        break;
     }
 
     await new parser().parsing({ browser: this.browser, ParsingData, searchInfo });
@@ -64,6 +68,8 @@ class PuppeteerModule {
     const parsingData: ParsingData_ = createParsingData();
     const Promiselist: Promise<void>[] = [];
     try {
+
+
       Promiselist.push(this.parsing_By_domainName(parsingData, searchInfo, 'www.avito.ru'));
       // for (const key in this.parsingModules) {
 

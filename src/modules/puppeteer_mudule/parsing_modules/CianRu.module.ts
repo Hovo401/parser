@@ -24,7 +24,7 @@ type dataType = {
   // photoUrls?: string[]
 };
 
-class AvitoRuMudule {
+class CianRuModule {
   async parsing({
     browser,
     ParsingData,
@@ -36,8 +36,6 @@ class AvitoRuMudule {
   }) {
     try {
       const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36');
-      
       await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
       page.on('request', (req) => {
@@ -84,7 +82,7 @@ class AvitoRuMudule {
             'styles-module-root-GKtmM'
           )[0] || 'null';
 
-          const url = 'https://' + window.location.hostname + item.querySelector('a.styles-module-root-YeOVk')?.getAttribute('href') || 'null___';
+          const url = window.location.hostname + item.querySelector('a.styles-module-root-YeOVk')?.getAttribute('href') || 'null___';
 
           const price = item.querySelector('strong.styles-module-root-bLKnd')?.textContent?.replace(/&nbsp;/g, ' ') || 'null'
           const description = item.querySelector('.iva-item-descriptionStep-C0ty1')?.textContent || 'null'
@@ -99,7 +97,7 @@ class AvitoRuMudule {
         return arrOut;
       });
 
-      // console.log(data);
+      console.log(data);
 
       // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
 
@@ -130,7 +128,7 @@ class AvitoRuMudule {
   }
 }
 
-export { AvitoRuMudule };
+export { CianRuModule };
 
 async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<string> {
   return await page.evaluate((propertyName) => {

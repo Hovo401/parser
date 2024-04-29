@@ -2,7 +2,9 @@
     width: 100%;
     color: #fff;
 }
-
+a{
+  color:white;
+}
 .xlsx_button{
   border: 0px;
   margin-right: 5px;
@@ -17,7 +19,9 @@
   cursor: pointer;
   background-color: #616161;
 }
-
+.a{
+  cursor: pointer;
+}
 
 .maxHeight{
     max-height: 80px;
@@ -46,6 +50,9 @@
     padding: 8px;
     border: 1px solid #ddd;
     color:#fff;
+  }
+  .excel-table td{
+    max-width: 40vw;
   }
   
   .excel-table th {

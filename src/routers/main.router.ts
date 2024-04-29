@@ -4,9 +4,9 @@ import { parsingnedvizhimost } from '../controllers/parsingParsingnedvizhimost.c
 
 const router = express();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
+// router.get('/', (req: Request, res: Response) => {
+//   res.send('Hello World!');
+// });
 
 router.post('/nedvizhimost', parsingnedvizhimost);
 
