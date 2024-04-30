@@ -44,9 +44,9 @@ class PuppeteerModule {
       executablePath: puppeteer.executablePath(),
       // args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      headless: true,
-      defaultViewport: null,
-      ignoreHTTPSErrors: true
+      headless: false,
+      // defaultViewport: null,
+      // ignoreHTTPSErrors: true
     });
   }
 
