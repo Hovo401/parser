@@ -35,7 +35,9 @@ class AsnaRu_cardsMudule {
 
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
       await page.goto(url);
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
 
       // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
 

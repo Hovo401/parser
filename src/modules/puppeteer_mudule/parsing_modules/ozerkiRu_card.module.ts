@@ -35,7 +35,12 @@ class ozerkiRu_cardsMudule {
 
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
     try {
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.1234.56 Safari/537.36',
+      );
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
       await page.goto(url);
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
 
       // await Promise.all([page.waitForSelector('.sc-e472fd3d-1.dBgsUk.app-main-title__title')]);
 

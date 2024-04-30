@@ -36,11 +36,18 @@ class ZhivikaRuMudule {
 
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
     try {
-      await page.goto(url);
 
       await page.setUserAgent(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.1234.56 Safari/537.36',
       );
+      
+      await page.goto(url);
+
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
+      await page.goto(url);
+      await new Promise((resolve) => setTimeout(resolve, 800 + Math.random() * 1000));
+
+      
       //   const pageTitle = await page.$eval('h1', (e) => e.innerHTML);
 
       //   if (pageTitle === 'DDoS-Guard') {
