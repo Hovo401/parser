@@ -61,6 +61,7 @@ class ozerkiRu_cardsMudule {
       const form = await topBarPardingByName(page, 'Форма выпуска');
       const activeIngredient = await topBarPardingByName(page, 'Действующее вещество');
 
+      const description = await mainPardingByName(page, 'Описание');
       const prescription = await mainPardingByName(page, 'Состав');
       const usageAndDosage = await mainPardingByName(page, 'Режим дозирования');
       const indications = await mainPardingByName(page, 'Показания');
@@ -80,6 +81,7 @@ class ozerkiRu_cardsMudule {
           usageAndDosage,
           manufacturer,
           available,
+          description,
           prescription,
           photoUrls,
         },

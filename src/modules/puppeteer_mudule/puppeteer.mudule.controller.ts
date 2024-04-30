@@ -12,7 +12,7 @@ type URLS = string[];
 type ParsingModules = {
   'superapteka.ru'?: typeof SuperaptekaRu_cardsMudule;
   'ozerki.ru'?: typeof ozerkiRu_cardsMudule;
-  'www.asna.ru'?: typeof AsnaRu_cardsMudule;
+  // 'www.asna.ru'?: typeof AsnaRu_cardsMudule;
   'aloeapteka.ru'?: typeof AloeaptekaRuMudule;
   'zhivika.ru'?: typeof ZhivikaRuMudule;
 };
@@ -33,7 +33,7 @@ class PuppeteerModule {
     this.parsingModules = {
       'superapteka.ru': SuperaptekaRu_cardsMudule,
       'ozerki.ru': ozerkiRu_cardsMudule,
-      'www.asna.ru': AsnaRu_cardsMudule,
+      // 'www.asna.ru': AsnaRu_cardsMudule,
       'aloeapteka.ru': AloeaptekaRuMudule,
       'zhivika.ru': ZhivikaRuMudule,
     };
