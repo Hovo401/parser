@@ -14,6 +14,9 @@ class SuperaptekaRu_cardsMudule {
   }) {
     try {
       const page = await browser.newPage();
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+      );
       await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
       page.on('request', (req) => {
@@ -35,9 +38,12 @@ class SuperaptekaRu_cardsMudule {
 
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
     try {
+<<<<<<< HEAD
       await page.setUserAgent(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.1234.56 Safari/537.36',
       );
+=======
+>>>>>>> 07d8fd584e2d6d4c2e1ef32b25fd2343dc995102
       await page.goto('https://superapteka.ru');
       await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
       await page.goto(url);

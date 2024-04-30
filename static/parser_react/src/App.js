@@ -84,6 +84,7 @@ function creatFile(obj) {
   var workbook = XLSX.utils.book_new();
   var columnWidths = {};
 
+<<<<<<< HEAD
   const widthList = {
     'title': 200,
     'URL': 80,
@@ -92,6 +93,8 @@ function creatFile(obj) {
   }
   
 
+=======
+>>>>>>> 07d8fd584e2d6d4c2e1ef32b25fd2343dc995102
   // Функция для вычисления ширины столбцов на основе данных
   function calculateColumnWidths(sheetData) {
     var cols = [];
@@ -101,6 +104,7 @@ function creatFile(obj) {
     firstRow.forEach(function(cell, colIndex) {
       var cellText = String(cell); // Преобразуем значение ячейки в строку
       var cellLength = cellText.length * 8; // Предположим, что каждый символ имеет ширину около 8 пикселей
+<<<<<<< HEAD
       if(widthList[cell]){
         console.log(cell)
         cols[colIndex] = { wpx: widthList[cell]}; // Устанавливаем ширину столбца в пикселях
@@ -108,6 +112,9 @@ function creatFile(obj) {
         cols[colIndex] = { wpx: cellLength }; // Устанавливаем ширину столбца в пикселях
       }
 
+=======
+      cols[colIndex] = { wpx: cellLength }; // Устанавливаем ширину столбца в пикселях
+>>>>>>> 07d8fd584e2d6d4c2e1ef32b25fd2343dc995102
     });
   
     return cols;
