@@ -36,6 +36,7 @@ class SuperaptekaRu_cardsMudule {
     }
   }
 
+  
   async task({ page, url, ParsingData }: { page: puppeteer.Page; url: string; ParsingData: ParsingData_ }) {
     try {
 <<<<<<< HEAD
