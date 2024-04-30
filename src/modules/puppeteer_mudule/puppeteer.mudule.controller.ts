@@ -42,11 +42,10 @@ class PuppeteerModule {
   public async openBrowser() {
     this.browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
-      // args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      headless: true,
-      defaultViewport: null,
-      ignoreHTTPSErrors: true
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
+      // headless: false, // включить отображение браузера
+      // defaultViewport: null,
+      // ignoreHTTPSErrors: true
     });
   }
 

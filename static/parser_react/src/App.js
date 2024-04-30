@@ -82,10 +82,40 @@ export default App;
 function creatFile(obj) {
   // Создание нового Workbook
   var workbook = XLSX.utils.book_new();
+  var columnWidths = {};
+
+  // Функция для вычисления ширины столбцов на основе данных
+  function calculateColumnWidths(sheetData) {
+    var cols = [];
+  
+    // Проходимся по первой строке данных для вычисления ширины столбцов
+    var firstRow = sheetData[0];
+    firstRow.forEach(function(cell, colIndex) {
+      var cellText = String(cell); // Преобразуем значение ячейки в строку
+      var cellLength = cellText.length * 8; // Предположим, что каждый символ имеет ширину около 8 пикселей
+      cols[colIndex] = { wpx: cellLength }; // Устанавливаем ширину столбца в пикселях
+    });
+  
+    return cols;
+  }
 
   // Создание нового листа в Workbook
   for (var sheetName in obj) {
-    var sheet = XLSX.utils.aoa_to_sheet(obj[sheetName]);
+    var sheetData = obj[sheetName];
+    var sheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+    // Вычисление ширины столбцов для текущего листа
+    columnWidths[sheetName] = calculateColumnWidths(sheetData);
+
+    // Установка максимальной ширины столбцов в 300 пикселей
+    columnWidths[sheetName].forEach(function(col) {
+      if (col.wpx > 300) {
+        col.wpx = 300;
+      }
+    });
+
+    // Установка ширины столбцов для листа
+    sheet['!cols'] = columnWidths[sheetName];
 
     // Добавление листа в Workbook
     XLSX.utils.book_append_sheet(workbook, sheet, sheetName);

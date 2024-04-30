@@ -14,6 +14,10 @@ class ZhivikaRuMudule {
   }) {
     try {
       const page = await browser.newPage();
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+      );
+
       await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
       page.on('request', (req) => {
@@ -38,9 +42,6 @@ class ZhivikaRuMudule {
     try {
       await page.goto(url);
 
-      await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.1234.56 Safari/537.36',
-      );
       //   const pageTitle = await page.$eval('h1', (e) => e.innerHTML);
 
       //   if (pageTitle === 'DDoS-Guard') {
