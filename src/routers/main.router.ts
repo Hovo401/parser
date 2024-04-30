@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import { parsingnedvizhimost } from '../controllers/parsingParsingnedvizhimost.controller.js';
+import { getUserInfo, setUserInfo } from '../controllers/userInfo.controller.js';
 
 const router = express();
 
@@ -9,5 +10,8 @@ const router = express();
 // });
 
 router.post('/nedvizhimost', parsingnedvizhimost);
+
+router.get('/getUserInfo', getUserInfo);
+router.post('/setUserInfo', setUserInfo);
 
 export default router;
