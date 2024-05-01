@@ -4,21 +4,23 @@ import React, { useState,useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { ParsingPanel } from './components/parsingPanel.js';
+import { dataPanel } from './components/dataPanel.js';
 
 function App() {
   const [file, setFile] = useState(null);
 
   const [textarea_, setTextarea_] = useState('');
+  const [pageName, setPageName] = useState('Parsing Panel');
   const [parsingStatus, setParsingStatus] = useState('free');
   const [userInfo_, setUserInfo_] = useState({
-
     "searchInfo": {
-        "textarea": "дом local"
+        "textarea": ""
     }
 });
 
-  // const myUrl = 'http://localhost:3000/'; // dev
-  const myUrl = window.location.href; // prod
+  const myUrl = 'http://localhost:3000/'; // dev
+  // const myUrl = window.location.href; // prod
 
   useEffect(() => {
     (async ()=>{
@@ -28,13 +30,14 @@ function App() {
         setUserInfo_(userInfo || '')
         setTextarea_(userInfo?.searchInfo?.textarea || '')
       }
-      
     })()
   }, []);
 
+
+
   async function setUserInfo(){
     try {
-      const response = await axios.post(myUrl + 'setUserInfo', userInfo_); 
+      await axios.post(myUrl + 'setUserInfo', userInfo_); 
       alert('данные сохранены')
     } catch (error) {
       console.log(error)
@@ -81,30 +84,27 @@ function App() {
     saveAs(blob, `parsing_${new Date(Date.now()).toISOString().slice(0, 10)}_${new Date(Date.now()).toLocaleTimeString().replace(/:/g,'-')}.xlsx`);
   }
 
+
   return (
     <div className="App">
       <header className="App-header">
-        <p>Parsing Panel</p>
+        <button onClick={()=>{setPageName('Parsing Panel')}} className={` button2 marginRight borderZero Text  ${pageName === 'Parsing Panel' ? '': 'close_page'} `}>Parsing Panel</button>
+        <button onClick={()=>{setPageName('Data Panel')}} className={` button2 marginRight borderZero Text ${pageName === 'Data Panel' ? '': 'close_page'}  `}>Data Panel</button>
+        <p id='pageName'>{pageName}</p>
       </header>
       <main>
-        <div id="parsingPanel">
-          <div id="leftPanel">
-            <textarea value={textarea_} onChange={(event) => {
-              const data_u = userInfo_;
-              data_u.searchInfo.textarea = event.target.value;
-              setUserInfo_(data_u);
-              setTextarea_(event.target.value)
-              }} id="parsingInfoTextArea" placeholder="Введите ключевые слова сюда для Авито" className="borderZero shadow"></textarea >
-            {/* { <input type="file" onChange={handleFileChange} /> } */}
-            <XlsxViewer file={file} />
-          </div>
-          <div id="rightPanel">
-            <button onClick={postData} className={`eft button borderZero Text shadow active ${'parsingStatus_'+parsingStatus}`}>Parsing</button>
-            <button onClick={setUserInfo} className="left button borderZero Text shadow active">Save settings</button>
-            <button onClick={downloadFile} className="left button borderZero Text shadow active">Downlad xlsx</button>
-          </div>
-          
-        </div>
+        {(()=>{
+
+          switch (pageName) {
+            case 'Parsing Panel':
+              return ParsingPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
+            case 'Data Panel':
+              return dataPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
+            default:
+              break;
+          }
+        })()}
+
       </main>
     </div>
   );

@@ -12,13 +12,7 @@ a{
   background-color: #333;
   color:white;
 }
-.close_page{
-  background-color: #8b8b8b;
-}
-.close_page:hover{
-  cursor: pointer;
-  background-color: #616161;
-}
+
 .a{
   cursor: pointer;
 }

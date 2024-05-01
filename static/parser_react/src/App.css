@@ -1,6 +1,6 @@
 .App-header {
   text-align: center;
-
+  display: flex;
 }
 .App{
   padding-left: 10px;
@@ -65,13 +65,24 @@
 
 .button{
   background-color: #666666;
-  width: 500px;
+  width: 150px;
   max-width: 100% ;
   border-radius: 10px;
   height: 30px;
   transition: 0.2s;
   margin-bottom: 10px;
   color:white;
+}
+.button2{
+  background-color: #333;
+  width: 130px;
+  height: 25px;
+  transition: 0.2s;
+  margin-bottom: 10px;
+  color:white;
+}
+.marginRight{
+  margin: 0px 5px 0px 0px;
 }
 .active:hover{
   background-color: #888888;
@@ -89,6 +100,18 @@
   /* font-size: calc(12px + 1vmin); */
   font-size: 24px;
   color: white;
+}
+#pageName{
+  width: calc( 100% - 550px );
+  min-width:200px;
+  text-align: center;
+}
+.close_page{
+  background-color: #8b8b8b;
+}
+.close_page:hover{
+  cursor: pointer;
+  background-color: #616161;
 }
 
 .App-link {

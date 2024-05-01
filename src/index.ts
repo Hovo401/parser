@@ -4,13 +4,17 @@ import PuppeteerModule from './modules/puppeteer_mudule/puppeteer.mudule.control
 import cors from 'cors';
 import path from 'path';
 import { __srcDirName } from './utils/dirPath.js';
+import fs from 'fs';
 
 const app = express();
 
 app.use(cors());
 app.use(express.static(path.join(__srcDirName, '..', 'static', 'parser_react', 'build')));
+app.use(express.static(path.join(__srcDirName, '..', 'data')));
 app.use(express.json());
 app.use(mainRouter);
+
+
 
 const PORT = Number(process.env.PORT) || 3000;
 
