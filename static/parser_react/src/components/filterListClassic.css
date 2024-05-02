@@ -1,0 +1,7 @@
+.buttonStatus_true{
+    background-color: #085e00;
+}
+.buttonStatus_false:hover{
+    background-color: #aaa;
+    cursor: pointer;
+}

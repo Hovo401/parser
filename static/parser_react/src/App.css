@@ -12,6 +12,7 @@
 }
 
 #parsingInfoTextArea{
+  margin: 5px 0px 5px 0px;
   min-width: 100% ;
   max-width: 100% ;
   min-height: 70px;
@@ -24,6 +25,7 @@
   background-color: #CDCDCD;
 }
 #parsingPanel{
+  color: white;
   display: flex;
   flex-wrap: wrap;
   height: calc(100vh - 32px);

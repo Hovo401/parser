@@ -1,15 +1,26 @@
+import './parsingPanel.css';
+import { FilterListClassic } from './filterListClassic.js'; 
+
 
 function ParsingPanel ({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus}){
     return (
         <div id="parsingPanel">
           <div id="leftPanel">
+            <h3>для Avito</h3>
             <textarea value={textarea_} onChange={(event) => {
               const data_u = userInfo_;
-              data_u.searchInfo.textarea = event.target.value;
+              data_u.searchInfo.avito.textarea = event.target.value;
               setUserInfo_(data_u);
               setTextarea_(event.target.value)
               }} id="parsingInfoTextArea" placeholder="Введите ключевые слова сюда для Авито" className="borderZero shadow"></textarea >
             {/* { <input type="file" onChange={handleFileChange} /> } */}
+              <hr/>
+              <br/>
+              <h3>для Cian</h3>
+
+
+              <FilterListClassic key={Math.random()} setUserInfo_  userInfo_ searchCategoryList={userInfo_?.searchInfo?.Cian?.searchCategoryList || []} />
+
             <XlsxViewer file={file} />
           </div>
           <div id="rightPanel">
@@ -17,8 +28,10 @@ function ParsingPanel ({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTexta
             <button onClick={setUserInfo} className="left button borderZero Text shadow active">Save settings</button>
             <button onClick={downloadFile} className="left button borderZero Text shadow active">Downlad xlsx</button>
           </div>
+        
         </div>
     )
 }
 
 export {ParsingPanel}
+

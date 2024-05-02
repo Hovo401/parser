@@ -11,13 +11,64 @@ function App() {
   const [file, setFile] = useState(null);
 
   const [textarea_, setTextarea_] = useState('');
-  const [pageName, setPageName] = useState('Parsing Panel');
+  const [pageName, setPageName] = useState('Parsing');
   const [parsingStatus, setParsingStatus] = useState('free');
   const [userInfo_, setUserInfo_] = useState({
     "searchInfo": {
-        "textarea": ""
-    }
-});
+        "avito":{
+          "textarea": ""
+        },
+        "Cian":{
+          "searchCategoryList":[
+            {
+              "name":"Category1",
+              "type":"buttonCheckList",
+              "addiction":[
+                {
+                  "categoryName":"",
+                  "ActivityButtonName":""
+                }
+              ],
+              "list":[
+                {"name":"Купить", "status":true},
+                {"name": "Снять", "status":false}
+              ]
+            },
+            {
+              "name":"Category2",
+              "type":"buttonCheckList",
+              "addiction":[
+                {
+                  "categoryName":"",
+                  "ActivityButtonName":""
+                }
+              ],
+              "list":[
+                {"name":"Коммерческая", "status":true},
+                {"name": "Жилая", "status":false}
+              ]
+            },
+            {
+              "name":"Category3",
+              "type":"buttonCheckList",
+              "addiction":[
+                {
+                  "categoryIndexToTop":"1",
+                  "ActivityButtonName":"Коммерческая"
+                }
+              ],
+              "list":[
+                {"name":"Комнату", "status":true},
+                {"name": "дом", "status":false},
+                {"name": "гараж", "status":false},
+                {"name": "участок", "status":false}
+              ]
+            }
+          ]
+        }
+        
+      }
+    });
 
   const myUrl = 'http://localhost:3000/'; // dev
   // const myUrl = window.location.href; // prod
@@ -27,8 +78,8 @@ function App() {
       const response = await axios.get(myUrl + 'getUserInfo'); 
       const userInfo = response.data;
       if( Math.floor( Number(response.status)/ 100)  != 5){
-        setUserInfo_(userInfo || '')
-        setTextarea_(userInfo?.searchInfo?.textarea || '')
+        setUserInfo_(userInfo)
+        setTextarea_(userInfo?.searchInfo?.avito?.textarea || '')
       }
     })()
   }, []);
@@ -88,17 +139,17 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={()=>{setPageName('Parsing Panel')}} className={` button2 marginRight borderZero Text  ${pageName === 'Parsing Panel' ? '': 'close_page'} `}>Parsing Panel</button>
-        <button onClick={()=>{setPageName('Data Panel')}} className={` button2 marginRight borderZero Text ${pageName === 'Data Panel' ? '': 'close_page'}  `}>Data Panel</button>
+        <button onClick={()=>{setPageName('Parsing')}} className={` button2 marginRight borderZero Text  ${pageName === 'Parsing' ? '': 'close_page'} `}>Parsing</button>
+        <button onClick={()=>{setPageName('Data')}} className={` button2 marginRight borderZero Text ${pageName === 'Data' ? '': 'close_page'}  `}>Data</button>
         <p id='pageName'>{pageName}</p>
       </header>
       <main>
         {(()=>{
 
           switch (pageName) {
-            case 'Parsing Panel':
+            case 'Parsing':
               return ParsingPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
-            case 'Data Panel':
+            case 'Data':
               return dataPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
             default:
               break;

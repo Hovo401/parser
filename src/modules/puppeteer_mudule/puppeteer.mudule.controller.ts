@@ -37,8 +37,9 @@ class PuppeteerModule {
     this.browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
-      // headless: false, // включить отображение браузера
+      headless: false, // включить отображение браузера
     });
+    
   }
 
   public async parsing_By_domainName(
