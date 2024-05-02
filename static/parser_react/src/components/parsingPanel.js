@@ -19,18 +19,19 @@ function ParsingPanel ({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTexta
               <h3>для Cian</h3>
 
 
-              <FilterListClassic key={Math.random()} setUserInfo_  userInfo_ searchCategoryList={userInfo_?.searchInfo?.Cian?.searchCategoryList || []} />
-
+              <FilterListClassic key={Math.random()} setUserInfo_={setUserInfo_}  userInfo_={userInfo_} webName={'Cian'} />
+              <h3>для Yandex</h3>
+              <FilterListClassic key={Math.random()} setUserInfo_={setUserInfo_}  userInfo_={userInfo_} webName={'Yandex'} />
             <XlsxViewer file={file} />
           </div>
           <div id="rightPanel">
             <button onClick={postData} className={`eft button borderZero Text shadow active ${'parsingStatus_'+parsingStatus}`}>Parsing</button>
-            <button onClick={setUserInfo} className="left button borderZero Text shadow active">Save settings</button>
             <button onClick={downloadFile} className="left button borderZero Text shadow active">Downlad xlsx</button>
+            <button onClick={setUserInfo} className="left button borderZero Text shadow active">Save settings</button>
           </div>
         
         </div>
-    )
+    );
 }
 
 export {ParsingPanel}

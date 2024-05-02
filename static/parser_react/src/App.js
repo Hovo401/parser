@@ -13,62 +13,9 @@ function App() {
   const [textarea_, setTextarea_] = useState('');
   const [pageName, setPageName] = useState('Parsing');
   const [parsingStatus, setParsingStatus] = useState('free');
-  const [userInfo_, setUserInfo_] = useState({
-    "searchInfo": {
-        "avito":{
-          "textarea": ""
-        },
-        "Cian":{
-          "searchCategoryList":[
-            {
-              "name":"Category1",
-              "type":"buttonCheckList",
-              "addiction":[
-                {
-                  "categoryName":"",
-                  "ActivityButtonName":""
-                }
-              ],
-              "list":[
-                {"name":"Купить", "status":true},
-                {"name": "Снять", "status":false}
-              ]
-            },
-            {
-              "name":"Category2",
-              "type":"buttonCheckList",
-              "addiction":[
-                {
-                  "categoryName":"",
-                  "ActivityButtonName":""
-                }
-              ],
-              "list":[
-                {"name":"Коммерческая", "status":true},
-                {"name": "Жилая", "status":false}
-              ]
-            },
-            {
-              "name":"Category3",
-              "type":"buttonCheckList",
-              "addiction":[
-                {
-                  "categoryIndexToTop":"1",
-                  "ActivityButtonName":"Коммерческая"
-                }
-              ],
-              "list":[
-                {"name":"Комнату", "status":true},
-                {"name": "дом", "status":false},
-                {"name": "гараж", "status":false},
-                {"name": "участок", "status":false}
-              ]
-            }
-          ]
-        }
-        
-      }
-    });
+  const [userInfo_, setUserInfo_] = useState(
+    {"searchInfo":{"avito":{"textarea":"good"},"Cian":{"searchKeywords":["Купить","Жилая","Комнату"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Комнату","status":true},{"name":"дом","status":false},{"name":"гараж","status":false},{"name":"участок","status":false}]}]},"Yandex":{"searchKeywords":["Купить","Жилая","Комнату"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Комнату","status":true},{"name":"дом","status":false},{"name":"гараж","status":false},{"name":"участок","status":false}]}]}}}
+  );
 
   const myUrl = 'http://localhost:3000/'; // dev
   // const myUrl = window.location.href; // prod
@@ -77,7 +24,7 @@ function App() {
     (async ()=>{
       const response = await axios.get(myUrl + 'getUserInfo'); 
       const userInfo = response.data;
-      if( Math.floor( Number(response.status)/ 100)  != 5){
+      if( Math.floor( Number(response.status)/ 100)  !== 5){
         setUserInfo_(userInfo)
         setTextarea_(userInfo?.searchInfo?.avito?.textarea || '')
       }
