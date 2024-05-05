@@ -1,11 +1,11 @@
 import './App.css';
-import XlsxViewer from './XlsxViewer';
+import XlsxViewer from './components/XlsxViewer.js';
 import React, { useState,useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
-import { ParsingPanel } from './components/parsingPanel.js';
-import { dataPanel } from './components/dataPanel.js';
+import { ParsingPanel } from './components/parsingPanel.js'; 
+import { DataPanel } from './components/dataPanel.js';
 
 function App() {
   const [file, setFile] = useState(null);
@@ -14,11 +14,11 @@ function App() {
   const [pageName, setPageName] = useState('Parsing');
   const [parsingStatus, setParsingStatus] = useState('free');
   const [userInfo_, setUserInfo_] = useState(
-    {"searchInfo":{"avito":{"textarea":"good"},"Cian":{"searchKeywords":["Купить","Жилая","Комнату"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Комнату","status":true},{"name":"дом","status":false},{"name":"гараж","status":false},{"name":"участок","status":false}]}]},"Yandex":{"searchKeywords":["Купить","Жилая","Комнату"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Комнату","status":true},{"name":"дом","status":false},{"name":"гараж","status":false},{"name":"участок","status":false}]}]}}}
+    {"searchInfo":{"avito":{"textarea":""},"Cian":{"searchKeywords":["Купить","Жилая","Комнату","null"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Комнату","status":true},{"name":"дом","status":false},{"name":"гараж","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":2,"ActivityButtonName":"Коммерческая"}],"list":[{"name":"Офис","status":true}]}]},"Yandex":{"searchKeywords":["Купить","Жилая","Квартиру"],"searchCategoryList":[{"name":"Category1","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Купить","status":true},{"name":"Снять","status":false}]},{"name":"Category2","type":"buttonCheckList","addiction":[{"categoryIndexToTop":-1,"ActivityButtonName":""}],"list":[{"name":"Жилая","status":true},{"name":"Коммерческая","status":false}]},{"name":"Category3","type":"buttonCheckList","addiction":[{"categoryIndexToTop":1,"ActivityButtonName":"Жилая"}],"list":[{"name":"Квартиру","status":true},{"name":"Комнату","status":false},{"name":"Дом","status":false},{"name":"Гараж","status":false}]}]}}}
   );
 
-  const myUrl = 'http://localhost:3000/'; // dev
-  // const myUrl = window.location.href; // prod
+  // const myUrl = 'http://localhost:3000/'; // dev
+  const myUrl = window.location.href; // prod
 
   useEffect(() => {
     (async ()=>{
@@ -52,9 +52,7 @@ function App() {
 
       // setTextarea_(textarea_.replace(/ /g,'').replace(/\n/g,'').replace(/,/g,',\n'))
 
-      const data = {
-        keywords: textarea_
-      };
+      const data = userInfo_;
       setParsingStatus('parsing')
       setFile(null)
       const response = await axios.post(myUrl + 'nedvizhimost' , data); 
@@ -71,10 +69,7 @@ function App() {
 
 
 
-  // function handleFileChange(event) {
-  //       const file = event.target.files[0];
-  //       setFile(file)
-  // }
+
 
   function downloadFile() {
     if (!file) return;
@@ -97,7 +92,19 @@ function App() {
             case 'Parsing':
               return ParsingPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
             case 'Data':
-              return dataPanel({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTextarea_, file, postData, setUserInfo, downloadFile, parsingStatus});
+              return <DataPanel
+              myUrl={myUrl}
+              XlsxViewer={XlsxViewer}
+              textarea_={textarea_}
+              userInfo_={userInfo_}
+              setUserInfo_={setUserInfo_}
+              setTextarea_={setTextarea_}
+              file={file}
+              postData={postData}
+              setUserInfo={setUserInfo}
+              downloadFile={downloadFile}
+              parsingStatus={parsingStatus}
+            />
             default:
               break;
           }
@@ -171,6 +178,3 @@ function creatFile(obj) {
   var xlsxFile = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
   return xlsxFile;
 }
-
-
-

@@ -6,12 +6,13 @@
     color:white;
     /* justify-content: center; */
     align-items: center;
-    padding: 5px;
+    padding: 0px;
     padding-left: 10px;
     border-radius: 10px;
+    margin-bottom: 5px;
 }
 .itemXLSX button {
     margin: 0px;
     margin-left: auto; /* Помещаем кнопку в конец строки */
-    
+    height: 25px;
 }

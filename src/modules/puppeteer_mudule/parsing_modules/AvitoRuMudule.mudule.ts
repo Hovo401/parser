@@ -2,43 +2,50 @@ import puppeteer from 'puppeteer';
 import { createParsingData, pushParsingData, ParsingData, ParsingData_ } from '../ParsingData.js';
 import { getIndexByClassNameAndInnerHTML } from '../search_functions/search_js_functions.js';
 
-type searchInfo = {
+type userData = {
   url: string;
-  keywords:string
+  keywords: string;
 };
 
 type dataType = {
-  title?: string,
-  url?: string,
-  regularPrice?: string,
-  promotionalPrice?: string,
-  form?: string,
-  prescription?: string,
-  activeIngredient?: string,
-  description?: string,
-  indications?: string,
-  contraindications?: string,
-  usageAndDosage?: string,
-  manufacturer?: string,
-  available?: string,
+  title?: string;
+  url?: string;
+  regularPrice?: string;
+  promotionalPrice?: string;
+  form?: string;
+  prescription?: string;
+  activeIngredient?: string;
+  description?: string;
+  indications?: string;
+  contraindications?: string;
+  usageAndDosage?: string;
+  manufacturer?: string;
+  available?: string;
   // photoUrls?: string[]
 };
 
 class AvitoRuMudule {
+  public url: string;
+  constructor() {
+    this.url = '';
+  }
   async parsing({
     browser,
     ParsingData,
-    searchInfo,
+    userData,
+    url,
   }: {
     browser: puppeteer.Browser;
     ParsingData: ParsingData_;
-    searchInfo: searchInfo;
+    userData: userData;
+    url: string;
   }) {
     try {
+      this.url = url;
       const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36');
-      
-
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+      );
 
       await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
@@ -50,52 +57,42 @@ class AvitoRuMudule {
         }
       });
 
-      await this.task({ page, searchInfo, ParsingData });
+      await this.task({ page, userData, ParsingData });
 
-      // await page.goto('chrome://settings/');
-      // await page.close();
+      await page.goto('chrome://settings/');
+      await page.close();
     } catch (error) {
       // console.error(error);
     }
   }
 
-  async task({
-    page,
-    searchInfo,
-    ParsingData,
-  }: {
-    page: puppeteer.Page;
-    searchInfo: searchInfo;
-    ParsingData: ParsingData_;
-  }) {
+  async task({ page, userData, ParsingData }: { page: puppeteer.Page; userData: userData; ParsingData: ParsingData_ }) {
     try {
-      console.log(searchInfo?.url);
-      await page.goto(searchInfo?.url);
+      console.log(this.url);
+      await page.goto(this.url, { timeout: 100000 });
 
       const data: dataType[] = await page.evaluate(() => {
-        const itemsList = Array.from(
-          document.getElementsByClassName(
-            'iva-item-root-_lk9K',
-          ),
-        );
+        const itemsList = Array.from(document.getElementsByClassName('iva-item-root-_lk9K'));
 
         const arrOut = [];
 
         for (const item of itemsList) {
-          const title = item.getElementsByClassName(
-            'styles-module-root-GKtmM'
-          )[0] || 'null';
+          const title = item.getElementsByClassName('styles-module-root-GKtmM')[0] || 'null';
 
-          const url = 'https://' + window.location.hostname + item.querySelector('a.styles-module-root-YeOVk')?.getAttribute('href') || 'null___';
+          const url =
+            'https://' +
+              window.location.hostname +
+              item.querySelector('a.styles-module-root-YeOVk')?.getAttribute('href') || 'null___';
 
-          const price = item.querySelector('strong.styles-module-root-bLKnd')?.textContent?.replace(/&nbsp;/g, ' ') || 'null'
-          const description = item.querySelector('.iva-item-descriptionStep-C0ty1')?.textContent || 'null'
-          
+          const price =
+            item.querySelector('strong.styles-module-root-bLKnd')?.textContent?.replace(/&nbsp;/g, ' ') || 'null';
+          const description = item.querySelector('.iva-item-descriptionStep-C0ty1')?.textContent || 'null';
+
           arrOut.push({
             title: title?.innerHTML?.replace(/&nbsp;/g, ' '),
             url,
             price,
-            description
+            description,
           });
         }
         return arrOut;
@@ -117,14 +114,15 @@ class AvitoRuMudule {
       //       ?.getElementsByClassName('sc-181f0572-2 cnGAiH')[0]?.innerHTML || 'null'
       //   );
       // });
-
-
-      data.forEach(data_=>{pushParsingData(data_,
-        ParsingData,
-        );
-      })
+      if (data.length === 0) {
+        data.push({ title: 'null' });
+      }
+      data.forEach((data_) => {
+        pushParsingData(data_, ParsingData);
+      });
       // console.log(ParsingData)
     } catch (error) {
+      pushParsingData({ title: 'null' }, ParsingData);
       console.error('Error occurred while navigating to URL:', error);
     } finally {
       // await page.close();

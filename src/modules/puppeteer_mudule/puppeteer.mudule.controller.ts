@@ -3,16 +3,17 @@ import { AvitoRuMudule } from './parsing_modules/AvitoRuMudule.mudule.js';
 import { ParsingData, ParsingData_, createParsingData } from './ParsingData.js';
 import { getDomainName } from '../../utils/functions.js';
 import { CianRuModule } from './parsing_modules/CianRu.module.js';
+import { RealtyYaRuModule } from './parsing_modules/realtyYaRu.module.js';
 
-type searchInfo = {
+type userData = {
   url: string;
   keywords: string;
 };
 type ParsingModules = {
   'www.avito.ru'?: typeof AvitoRuMudule;
   'www.cian.ru'?: typeof CianRuModule;
+  'realty.ya.ru'?: typeof RealtyYaRuModule;
 };
-
 
 class PuppeteerModule {
   static ex: PuppeteerModule;
@@ -29,7 +30,8 @@ class PuppeteerModule {
 
     this.parsingModules = {
       'www.avito.ru': AvitoRuMudule,
-      'www.cian.ru': CianRuModule
+      'www.cian.ru': CianRuModule,
+      'realty.ya.ru': RealtyYaRuModule,
     };
   }
 
@@ -37,41 +39,43 @@ class PuppeteerModule {
     this.browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
-      headless: false, // включить отображение браузера
+      // headless: false, // включить отображение браузера
     });
-    
   }
 
   public async parsing_By_domainName(
     ParsingData: ParsingData_,
-    searchInfo: searchInfo,
+    userData: any,
     domainName: keyof ParsingModules,
   ): Promise<void> {
     const parser = this.parsingModules[domainName];
     if (!parser) {
       throw new Error(`No parser found for domain: ${domainName}`);
     }
+    let url = '';
     switch (domainName) {
       case 'www.avito.ru':
-        searchInfo.url =
-          'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || ' ';
+        url =
+          'https://' +
+            domainName +
+            '/all/nedvizhimost?q=' +
+            userData?.searchInfo?.avito?.textarea?.replace(/ /g, '+') || ' ';
         break;
       case 'www.cian.ru':
-        searchInfo.url =
-          'https://' + domainName + '/all/nedvizhimost?q=' + searchInfo?.keywords.replace(/ /g, '+') || ' ';
+        url = 'https://' + domainName + '/';
         break;
     }
 
-    await new parser().parsing({ browser: this.browser, ParsingData, searchInfo });
+    await new parser().parsing({ browser: this.browser, ParsingData, userData, url });
   }
 
-  public async parsing(searchInfo: searchInfo): Promise<ParsingData_> {
+  public async parsing(userData: userData): Promise<ParsingData_> {
     const parsingData: ParsingData_ = createParsingData();
     const Promiselist: Promise<void>[] = [];
     try {
-
-
-      Promiselist.push(this.parsing_By_domainName(parsingData, searchInfo, 'www.avito.ru'));
+      Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'www.avito.ru'));
+      Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'www.cian.ru'));
+      Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'realty.ya.ru'));
       // for (const key in this.parsingModules) {
 
       //   Promiselist.push(this.parsing_By_domainName(parsingData, filURLs, key as keyof typeof this.parsingModules));

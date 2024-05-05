@@ -2,102 +2,130 @@ import puppeteer from 'puppeteer';
 import { createParsingData, pushParsingData, ParsingData, ParsingData_ } from '../ParsingData.js';
 import { getIndexByClassNameAndInnerHTML } from '../search_functions/search_js_functions.js';
 
-type searchInfo = {
-  url: string;
-  keywords:string
+type userData = {
+  searchinfo: string;
+  keywords: string;
 };
 
 type dataType = {
-  title?: string,
-  url?: string,
-  regularPrice?: string,
-  promotionalPrice?: string,
-  form?: string,
-  prescription?: string,
-  activeIngredient?: string,
-  description?: string,
-  indications?: string,
-  contraindications?: string,
-  usageAndDosage?: string,
-  manufacturer?: string,
-  available?: string,
+  title?: string;
+  url?: string;
+  regularPrice?: string;
+  promotionalPrice?: string;
+  form?: string;
+  prescription?: string;
+  activeIngredient?: string;
+  description?: string;
+  indications?: string;
+  contraindications?: string;
+  usageAndDosage?: string;
+  manufacturer?: string;
+  available?: string;
   // photoUrls?: string[]
 };
 
 class CianRuModule {
+  public url: string;
+  constructor() {
+    this.url = '';
+  }
   async parsing({
     browser,
     ParsingData,
-    searchInfo,
+    userData,
+    url,
   }: {
     browser: puppeteer.Browser;
     ParsingData: ParsingData_;
-    searchInfo: searchInfo;
+    userData: userData;
+    url: string;
   }) {
     try {
+      this.url = url;
       const page = await browser.newPage();
-      await page.setJavaScriptEnabled(false);
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+      );
+
+      // await page.setJavaScriptEnabled(false);
       await page.setRequestInterception(true);
-      page.on('request', (req) => {
-        if (req.resourceType() !== 'document') {
-          req.abort();
+      page.on('request', (request) => {
+        if (request.resourceType() === 'image') {
+          request.abort();
         } else {
-          req.continue();
+          request.continue();
         }
       });
 
-      await this.task({ page, searchInfo, ParsingData });
+      await this.task({ page, userData, ParsingData });
 
-      // await page.goto('chrome://settings/');
-      // await page.close();
+      await page.goto('chrome://settings/');
+      await page.close();
     } catch (error) {
       // console.error(error);
     }
   }
 
-  async task({
-    page,
-    searchInfo,
-    ParsingData,
-  }: {
-    page: puppeteer.Page;
-    searchInfo: searchInfo;
-    ParsingData: ParsingData_;
-  }) {
+  async task({ page, userData, ParsingData }: { page: puppeteer.Page; userData: any; ParsingData: ParsingData_ }) {
     try {
-      console.log(searchInfo?.url);
-      await page.goto(searchInfo?.url);
+      console.log(this.url);
 
-      const data: dataType[] = await page.evaluate(() => {
-        const itemsList = Array.from(
-          document.getElementsByClassName(
-            'iva-item-root-_lk9K',
-          ),
-        );
+      await page.goto('https://www.cian.ru/', { timeout: 100000 });
+      const keywords = userData?.searchInfo?.Cian?.searchKeywords || [];
 
-        const arrOut = [];
+      const request: any = {
+        jsonQuery: {
+          _type: (() => {
+            let out = '';
 
-        for (const item of itemsList) {
-          const title = item.getElementsByClassName(
-            'styles-module-root-GKtmM'
-          )[0] || 'null';
+            if (keywords[1] === 'Коммерческая') {
+              out += 'commercial';
+            } else if (keywords[1] === 'Жилая') {
+              if (keywords[2] === 'Комнату') {
+                out += 'flat';
+              } else if (keywords[2] === 'дом') {
+                out += 'suburban';
+              } else if (keywords[2] === 'гараж') {
+                out += 'commercial';
+              }
+            }
 
-          const url = window.location.hostname + item.querySelector('a.styles-module-root-YeOVk')?.getAttribute('href') || 'null___';
+            if (keywords[0] === 'Снять') {
+              out += 'rent';
+            } else if (keywords[0] === 'Купить') {
+              out += 'sale';
+            }
+            return out;
+          })(),
+          engine_version: { type: 'term', value: 2 },
+          region: { type: 'terms', value: [1] },
+          room: { type: 'terms', value: [0] },
+          publish_period: { type: 'term', value: -2 },
+          page: { type: 'term', value: 0 },
+        },
+      };
 
-          const price = item.querySelector('strong.styles-module-root-bLKnd')?.textContent?.replace(/&nbsp;/g, ' ') || 'null'
-          const description = item.querySelector('.iva-item-descriptionStep-C0ty1')?.textContent || 'null'
-          
-          arrOut.push({
-            title: title?.innerHTML?.replace(/&nbsp;/g, ' '),
-            url,
-            price,
-            description
-          });
+      if (keywords[2] === 'гараж') {
+        request.jsonQuery.office_type = { type: 'terms', value: [6] };
+      }
+      // console.log(request, keywords);
+
+      const data: any = await postreq(page, request);
+
+      const qaunt = (() => {
+        if (data?.offerCount / 27 && data?.offerCount / 27 < 10) {
+          return data?.offerCount / 27;
+        } else {
+          return 10;
         }
-        return arrOut;
-      });
+      })();
+      for (let i = 1; i <= qaunt; i++) {
+        request.jsonQuery.page = { type: 'term', value: i };
+        const data_page: any = await postreq(page, request);
+        data?.offersSerialized?.push(...data_page.offersSerialized);
+      }
 
-      console.log(data);
+      // console.log(data?.offersSerialized);
 
       // await Promise.all([page.waitForSelector('.sc-f71b115b-1.jpChov')]);
 
@@ -114,13 +142,24 @@ class CianRuModule {
       //   );
       // });
 
-
-      data.forEach(data_=>{pushParsingData(data_,
-        ParsingData,
-        );
-      })
-      // console.log(ParsingData)
+      if (!data?.offersSerialized || data?.offersSerialized.length === 0) {
+        data.offersSerialized = { title: 'null' };
+      }
+      data?.offersSerialized?.forEach((data_: any) => {
+        // const num: any = data_?.user?.phoneNumbers || {};
+        const data_in = {
+          title: data_?.formattedFullInfo || 'null',
+          price: data_?.formattedFullPrice || 'null',
+          url: data_?.fullUrl || 'null',
+          description: data_?.description || 'null',
+          agencyName: data_?.user?.agencyName || 'null',
+          // phone: (num[0]?.countryCode || '') + (num[0]?.number || 'null'),
+        };
+        pushParsingData(data_in, ParsingData, 'cian');
+      });
+      // console.log(ParsingData);
     } catch (error) {
+      pushParsingData({ title: 'null' }, ParsingData, 'cian');
       console.error('Error occurred while navigating to URL:', error);
     } finally {
       // await page.close();
@@ -130,52 +169,37 @@ class CianRuModule {
 
 export { CianRuModule };
 
-async function topBarPardingByName(page: puppeteer.Page, name: string): Promise<string> {
-  return await page.evaluate((propertyName) => {
-    const propertyElement = [...Array.from(document.querySelectorAll('span.cxutsw'))].find((element) =>
-      element?.textContent?.trim().startsWith(propertyName),
-    );
+async function postreq(paage: puppeteer.Page, request: any) {
+  return await paage.evaluate(async (data: any) => {
+    let arrOut: any = {};
 
-    if (propertyElement) {
-      const valueElement = propertyElement?.nextElementSibling?.querySelector('span[title], a[title]');
-      return valueElement ? String(valueElement.getAttribute('title')) : 'null';
-    } else {
-      return 'null';
+    const url = 'https://api.cian.ru/search-offers/v2/search-offers-desktop/';
+
+    const headers = new Headers();
+    headers.append('Accept', '*/*');
+    headers.append('Accept-Encoding', 'gzip, deflate, br, zstd');
+    headers.append('Accept-Language', 'ru-RU,ru;q=0.9,en;q=0.8');
+    headers.append('Content-Type', 'application/json');
+    // Добавляем заголовки cookie, user-agent и другие, как указано в вашем списке заголовков
+    //headers.append('Cookie', '_CIAN_GK=b818e195-f3b6-4f45-95da-0be7d4297e40; _gcl_au=1.1.1040443127.1714239379; tmr_lvid=79b0faebf94d1b64b48965211dddafbe; ...'); // Ваш список cookie
+    // headers.append(
+    //   'User-Agent',
+    //   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    // ); // Ваш user-agent
+
+    const options = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data),
+    };
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-  }, name);
-}
+    arrOut = await response.json();
 
-async function mainPardingByName(page: puppeteer.Page, name: string): Promise<string> {
-  return await page.$$eval(
-    '.sc-44f276c9-5',
-    (nodes, name) => {
-      for (const node of nodes) {
-        const header = node?.querySelector('.sc-44f276c9-7');
-        if (header && header?.textContent?.trim().includes(name)) {
-          const content = node?.querySelector('.sc-44f276c9-6')?.textContent?.trim();
-          return String(content);
-        }
-      }
-      return 'null';
-    },
-    name,
-  );
-}
-
-async function getImagesURLs(page: puppeteer.Page) {
-  return await page.evaluate(() => {
-    const value = document.querySelector('.sc-aa4bb14d-0.gIGWkk');
-    const out = [];
-    if (value) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(value.outerHTML, 'text/html');
-
-      // Получение ссылки на изображение
-      const imgElement = doc?.querySelectorAll('img');
-      for (const el of Array.from(imgElement)) {
-        out.push('https://' + window.location.hostname + el.getAttribute('src'));
-      }
-    }
-    return out || [];
-  });
+    return arrOut?.data;
+  }, request);
 }

@@ -6,6 +6,7 @@ function ParsingPanel ({XlsxViewer, textarea_, userInfo_, setUserInfo_, setTexta
     return (
         <div id="parsingPanel">
           <div id="leftPanel">
+            <h5>Задача настроена на выполнение каждый день 23:00</h5>
             <h3>для Avito</h3>
             <textarea value={textarea_} onChange={(event) => {
               const data_u = userInfo_;

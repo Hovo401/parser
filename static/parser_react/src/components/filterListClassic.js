@@ -4,7 +4,7 @@ import './filterListClassic.css';
 function FilterListClassic({  setUserInfo_, userInfo_, webName }) {
   const searchCategoryList = userInfo_?.searchInfo[webName]?.searchCategoryList;
   return (
-    <div className='searchCategoryList'>
+    <div  className='searchCategoryList'>
       {searchCategoryList.map((category, index) => {
       if (getInitclose({fun:()=>{}, userInfo_, category, index, webName})) return <></>
         

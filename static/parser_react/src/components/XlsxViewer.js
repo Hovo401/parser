@@ -37,6 +37,11 @@ function XlsxViewer({file}) {
 
       reader.readAsArrayBuffer(file);
   }; 
+
+  function hardHandleFileChange(event) {
+    const file = event.target.files[0];
+    handleFileChange(file)
+    }
   
     const renderExcelData = (data) => {
         return (
@@ -76,7 +81,7 @@ function XlsxViewer({file}) {
     return (
         <div className="XlsxViewer">
             <h1>XLSX Viewer</h1>
-            {/* <input type="file" onChange={handleFileChange} /> */}
+            {/* <input type="file" onChange={hardHandleFileChange} /> */}
             <SheetSwitcher
                 sheetNames={sheetNames}
                 currentSheet={currentSheet}
@@ -110,16 +115,32 @@ export default XlsxViewer;
 
 
 
-function findLinksAndWrapInAnchorTags(text) {
-    // Регулярное выражение для поиска ссылок
-    var regex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*\b/g;
-    // Заменяем найденные ссылки на ссылки, обернутые в теги <a>
+// function findLinksAndWrapInAnchorTags(text) {
+//     // Регулярное выражение для поиска ссылок
+//     var regex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*\b/g;
+//     // Заменяем найденные ссылки на ссылки, обернутые в теги <a>
 
-    var replacedText = text.replace(regex, function(match) {
-        return `<a href="#" onclick="window.open('${match}')" className="a">${match}</a>`;
-    });
-    // Возвращаем текст с обернутыми в теги <a> ссылками
-    return <TextToHtml text={replacedText} />;
+//     var replacedText = text.replace(regex, function(match) {
+//         return `<a href="#" onclick="window.open('${match}')" className="a">${match}</a>`;
+//     });
+//     // Возвращаем текст с обернутыми в теги <a> ссылками
+//     return <TextToHtml text={replacedText} />;
+// }
+
+function findLinksAndWrapInAnchorTags(text) {
+    if (typeof text === 'string') {
+        // Регулярное выражение для поиска ссылок
+        var regex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*\b/g;
+        // Заменяем найденные ссылки на ссылки, обернутые в теги <a>
+
+        var replacedText = text.replace(regex, function(match) {
+            return `<a href="#" onclick="window.open('${match}')" className="a">${match}</a>`;
+        });
+        // Возвращаем текст с обернутыми в теги <a> ссылками
+        return <TextToHtml text={replacedText} />;
+    } else {
+        return text; // Return as is if not a string
+    }
 }
 
 function TextToHtml({ text }) {
