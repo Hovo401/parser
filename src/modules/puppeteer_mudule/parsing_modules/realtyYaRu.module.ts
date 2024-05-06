@@ -56,7 +56,7 @@ class RealtyYaRuModule {
       await page.goto('chrome://settings/');
       await page.close();
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     }
   }
 
@@ -79,14 +79,18 @@ class RealtyYaRuModule {
       });
 
       if (keywords[1] === 'Жилая') {
+
         await cliclin({ select: `span.Select__button-text-item`, index: 1, page });
+
         await cliclin({
           select: `div.Menu__item.Menu__item_js_inited.Menu__item_size_l.Menu__item_theme_realty.Menu__item_mode_radio`,
           page,
           innerHTML_: keywords[2],
         });
       } else if (keywords[1] === 'Коммерческая') {
+
         await cliclin({ select: `span.Select__button-text-item`, index: 1, page });
+
         await cliclin({
           select: `div.Menu__item.Menu__item_js_inited.Menu__item_size_l.Menu__item_theme_realty.Menu__item_mode_radio`,
           page,
@@ -94,17 +98,17 @@ class RealtyYaRuModule {
         });
       }
 
-      try {
-        await page.waitForNavigation({ timeout: 80000 });
-      } catch (error) {
-        // console.error('Произошла ошибка во время ожидания навигации:', error);
-      }
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // try {
+      //   await page.waitForNavigation({ timeout: 80000 });
+      // } catch (error) {
+      //   // console.error('Произошла ошибка во время ожидания навигации:', error);
+      // }
+      await new Promise((resolve) => setTimeout(resolve, 6000));
 
       // parser
       const data_in: dataType[] = await page.evaluate(() => {
         const elements = document.querySelectorAll(
-          'li.OffersSerpItem.OffersSerpItem_view_desktop, li.vLDr24nDAgQUlSAItem.vLDr24nDAgQUlSAItem_view_desktop.vLDr24nDAgQUlSAItem_format_full.vLDr24nDAgQUlSA__list-item.vLDr24nDAgQUlSA__list-item_type_offer',
+          'li.OffersSerpItem, li.vLDr24nDAgQUlSAItem, li.baIoAUF8jPLbd4wItem',
         );
 
         const out = [];
@@ -112,9 +116,9 @@ class RealtyYaRuModule {
         elements.forEach((el) => {
           out.push({
             title:
-              el?.querySelector('span.OffersSerpItem__title, span.vLDr24nDAgQUlSAItem__title')?.textContent || 'null',
+              el?.querySelector('span.OffersSerpItem__title, span.vLDr24nDAgQUlSAItem__title, span.baIoAUF8jPLbd4wItem__title')?.textContent || 'null',
             description:
-              el?.querySelector('p.OffersSerpItem__description, P.vLDr24nDAgQUlSAItem__description')?.textContent ||
+              el?.querySelector('p.OffersSerpItem__description, P.vLDr24nDAgQUlSAItem__description, p.baIoAUF8jPLbd4wItem__description')?.textContent ||
               'null',
             price: el?.querySelector('span.price')?.textContent || 'null',
             url:

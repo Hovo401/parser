@@ -62,7 +62,7 @@ class CianRuModule {
       await page.goto('chrome://settings/');
       await page.close();
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     }
   }
 
