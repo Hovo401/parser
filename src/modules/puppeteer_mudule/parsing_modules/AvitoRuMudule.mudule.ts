@@ -68,7 +68,7 @@ class AvitoRuMudule {
 
   async task({ page, userData, ParsingData }: { page: puppeteer.Page; userData: userData; ParsingData: ParsingData_ }) {
     try {
-      console.log(this.url);
+      // console.log(this.url);
       await page.goto(this.url, { timeout: 100000 });
 
       const data: dataType[] = await page.evaluate(() => {

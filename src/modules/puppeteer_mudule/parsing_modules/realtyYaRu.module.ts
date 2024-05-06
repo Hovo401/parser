@@ -62,9 +62,9 @@ class RealtyYaRuModule {
 
   async task({ page, userData, ParsingData }: { page: puppeteer.Page; userData: any; ParsingData: ParsingData_ }) {
     try {
-      console.log(this.url);
+      // console.log(this.url);
 
-      await page.goto('https://realty.ya.ru/moskva_i_moskovskaya_oblast/kupit/kvartira/', { timeout: 200000 });
+      await page.goto('https://realty.ya.ru/moskva_i_moskovskaya_oblast/kupit/kvartira/', { timeout: 120000 });
       const keywords = userData?.searchInfo?.Yandex?.searchKeywords || [];
 
       await cliclin({
@@ -103,12 +103,12 @@ class RealtyYaRuModule {
       // } catch (error) {
       //   // console.error('Произошла ошибка во время ожидания навигации:', error);
       // }
-      await new Promise((resolve) => setTimeout(resolve, 6000));
+      await new Promise((resolve) => setTimeout(resolve, 7000));
 
       // parser
       const data_in: dataType[] = await page.evaluate(() => {
         const elements = document.querySelectorAll(
-          'li.OffersSerpItem, li.vLDr24nDAgQUlSAItem, li.baIoAUF8jPLbd4wItem',
+          'li[class*="__list-item_type_offer"]'
         );
 
         const out = [];
@@ -116,9 +116,9 @@ class RealtyYaRuModule {
         elements.forEach((el) => {
           out.push({
             title:
-              el?.querySelector('span.OffersSerpItem__title, span.vLDr24nDAgQUlSAItem__title, span.baIoAUF8jPLbd4wItem__title')?.textContent || 'null',
+              el?.querySelector('span[class*="__title"]')?.textContent || 'null',
             description:
-              el?.querySelector('p.OffersSerpItem__description, P.vLDr24nDAgQUlSAItem__description, p.baIoAUF8jPLbd4wItem__description')?.textContent ||
+              el?.querySelector('p[class*="__description"]')?.textContent ||
               'null',
             price: el?.querySelector('span.price')?.textContent || 'null',
             url:

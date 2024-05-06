@@ -16,8 +16,10 @@ a{
   background-color: #888888;
 }
 
-.a{
+.aLinck{
+  text-decoration: underline; 
   cursor: pointer;
+  color:black;
 }
 
 .maxHeight{

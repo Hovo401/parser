@@ -6,9 +6,19 @@ import { CianRuModule } from './parsing_modules/CianRu.module.js';
 import { RealtyYaRuModule } from './parsing_modules/realtyYaRu.module.js';
 
 type userData = {
-  url: string;
-  keywords: string;
+  searchInfo:{
+    avito:{
+      textarea:string;
+    },
+    Cian:{
+      searchKeywords: string[];
+    },
+    Yandex:{
+      searchKeywords: string[];
+    }
+  }
 };
+
 type ParsingModules = {
   'www.avito.ru'?: typeof AvitoRuMudule;
   'www.cian.ru'?: typeof CianRuModule;
@@ -73,16 +83,19 @@ class PuppeteerModule {
     const parsingData: ParsingData_ = createParsingData();
     const Promiselist: Promise<void>[] = [];
     try {
+
       Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'www.avito.ru'));
       Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'www.cian.ru'));
       Promiselist.push(this.parsing_By_domainName(parsingData, userData, 'realty.ya.ru'));
-      // for (const key in this.parsingModules) {
 
+      // for (const key in this.parsingModules) {
       //   Promiselist.push(this.parsing_By_domainName(parsingData, filURLs, key as keyof typeof this.parsingModules));
       // }
       await Promise.all(Promiselist);
+
       return parsingData;
     } catch (error) {
+      console.error('puppeteer parsing error:', error)
       return parsingData;
     }
   }

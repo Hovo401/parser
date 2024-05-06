@@ -24,7 +24,7 @@ async function start() {
     await puppeteerModule.openBrowser();
     jobStart();
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT} \n`);
     });
   } catch (e) {
     console.error(e);

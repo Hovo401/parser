@@ -68,7 +68,7 @@ class CianRuModule {
 
   async task({ page, userData, ParsingData }: { page: puppeteer.Page; userData: any; ParsingData: ParsingData_ }) {
     try {
-      console.log(this.url);
+      // console.log(this.url);
 
       await page.goto('https://www.cian.ru/', { timeout: 100000 });
       const keywords = userData?.searchInfo?.Cian?.searchKeywords || [];

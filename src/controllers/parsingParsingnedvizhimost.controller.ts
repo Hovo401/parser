@@ -5,10 +5,13 @@ import { transformData, ParsingData } from '../modules/puppeteer_mudule/ParsingD
 const puppeteerModule = new PuppeteerModule();
 
 async function parsingnedvizhimost(req: Request, res: Response): Promise<void> {
+
   const result = await puppeteerModule.parsing(req.body ?? {});
   const parsedResult = result as ParsingData;
-
+  
   const fileData = transformData(parsedResult);
+  
+  console.log(`parsing date: ${new Date(Date.now())} ;`);
   res.json(fileData);
 }
 

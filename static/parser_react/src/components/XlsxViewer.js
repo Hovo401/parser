@@ -134,7 +134,7 @@ function findLinksAndWrapInAnchorTags(text) {
         // Заменяем найденные ссылки на ссылки, обернутые в теги <a>
 
         var replacedText = text.replace(regex, function(match) {
-            return `<a href="#" onclick="window.open('${match}')" className="a">${match}</a>`;
+            return `<a onclick="window.open('${match}')" style="text-decoration: underline; cursor: pointer;">${match}</a>`;
         });
         // Возвращаем текст с обернутыми в теги <a> ссылками
         return <TextToHtml text={replacedText} />;
